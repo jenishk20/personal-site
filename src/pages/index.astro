@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { SITE, SOCIALS } from '../consts';
+import { publish } from '../utils/format';
+
+const writing = publish(await getCollection('writing')).slice(0, 5);
+---
+
+<Base isHome>
+    <article>
+        <h1>Jenish Kothari</h1>
+
+        <p>
+            I'm Jenish. Software Engineer II at <strong>Adobe</strong>, MS CS from
+            Northeastern. I post-train small open models to do work that usually
+            needs frontier models &mdash; in production, and in the open.
+        </p>
+
+        <p>
+            Post-training is the day job and the hobby: SFT, reasoning
+            distillation, DPO, and GRPO. At Adobe I distilled a production LLM
+            down to a <strong>3B parameter model, cutting inference cost 10&times;
+            while holding 72% of GPT-4 benchmarks</strong>. On my own time I do
+            the same thing for text-to-SQL, evaluated by executing every
+            generated query against the real database and comparing result sets
+            &mdash; no fuzzy string matching, no exact-match SQL scoring.
+        </p>
+
+        <p>
+            The thread running through all of it is <em>local</em>. A 7B that fits
+            on one GPU and matches a 1.6T frontier model is worth more to most
+            teams than an API call, so that's what I optimize for.
+        </p>
+
+        <p>
+            <strong>Start here: <a href="/start-here/">Start Here</a></strong>
+        </p>
+
+        <h3>Latest writing</h3>
+        <PostList items={writing} showDescription />
+        <p><a href="/writing/">All writing &rarr;</a></p>
+
+        <h3>Elsewhere</h3>
+        <p>
+            Models and datasets on <a href={SOCIALS.huggingface}>Hugging Face</a>,
+            code on <a href={SOCIALS.github}>GitHub</a>, and short-form thinking on
+            <a href={SOCIALS.x}>X</a>. Also on
+            <a href={SOCIALS.linkedin}>LinkedIn</a> and
+            <a href={SOCIALS.kaggle}>Kaggle</a>.
+        </p>
+        <p>Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    </article>
+</Base>

@@ -1,0 +1,16 @@
+# Cloudflare config. Only needed for local testing of functions/ with
+# `wrangler pages dev` — the hosted build reads its settings from the dashboard.
+#
+# compatibility_date is pinned deliberately. Left unset, wrangler defaults to
+# today's date, which can be newer than the workerd binary bundled with the
+# installed wrangler and fails to boot. Bump it when you upgrade wrangler.
+
+name = "jenishkothari-site"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-01"
+
+# The COUNTERS KV namespace is bound in the Cloudflare dashboard
+# (Settings -> Bindings) rather than here, so the real namespace id stays out of
+# the repo. For local testing, pass it on the command line instead:
+#
+#   npx wrangler pages dev --kv COUNTERS

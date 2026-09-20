@@ -1,0 +1,215 @@
+---
+import Base from '../layouts/Base.astro';
+import Tag from '../components/Tag.astro';
+import { getCollection } from 'astro:content';
+import { hf, github, formatCount, STAR_DISPLAY_THRESHOLD } from '../lib/stats';
+
+/**
+ * Deliberately short. Four things that are worth someone's attention, and one
+ * line for everything else. Process detail — training ladders, ablations — lives
+ * in the essays, not here.
+ *
+ * Download and star counts come from the Hugging Face and GitHub APIs at build
+ * time, never hardcoded. If an API is unreachable, stats.ts falls back to a
+ * recorded measurement and flags it.
+ */
+
+const artifacts = [
+    {
+        kind: 'models' as const,
+        id: 'jk200201/qwen2.5-coder-7b-bird-cot',
+        label: 'qwen2.5-coder-7b-bird-cot',
+        type: 'Model · reasoning-distilled text-to-SQL',
+        href: 'https://huggingface.co/jk200201/qwen2.5-coder-7b-bird-cot',
+    },
+    {
+        kind: 'models' as const,
+        id: 'jk200201/qwen2.5-coder-7b-bird-cot-GGUF',
+        label: '…-GGUF',
+        type: 'Model · quantized for local inference',
+        href: 'https://huggingface.co/jk200201/qwen2.5-coder-7b-bird-cot-GGUF',
+    },
+    {
+        kind: 'datasets' as const,
+        id: 'jk200201/bird-cot-sft',
+        label: 'bird-cot-sft',
+        type: 'Dataset · CoT traces from Qwen3-Coder-480B',
+        href: 'https://huggingface.co/datasets/jk200201/bird-cot-sft',
+    },
+    {
+        kind: 'datasets' as const,
+        id: 'jk200201/spider-dpo-1040',
+        label: 'spider-dpo-1040',
+        type: 'Dataset · 1,040 execution-verified preference pairs',
+        href: 'https://huggingface.co/datasets/jk200201/spider-dpo-1040',
+    },
+];
+
+const withStats = await Promise.all(
+    artifacts.map(async (a) => ({ ...a, stats: await hf(a.kind, a.id) })),
+);
+
+const totalAllTime = withStats.reduce(
+    (sum, a) => sum + (a.stats.downloadsAllTime ?? 0),
+    0,
+);
+const anyStale = withStats.some((a) => !a.stats.live);
+
+// Only link to the write-up once it is actually published, so a draft post
+// never leaves a 404 on this page. Flips itself when draft: false.
+const WRITEUP_SLUG = 'reasoning-distillation-vs-sql-distillation';
+const writeup = (await getCollection('writing')).find((e) => e.id === WRITEUP_SLUG);
+const writeupLive = !!writeup && (import.meta.env.DEV || !writeup.data.draft);
+
+const mainRepo = await github('jenishk20/finetuning-text-to-sql');
+const showStars =
+    mainRepo.stars !== null && mainRepo.stars >= STAR_DISPLAY_THRESHOLD;
+---
+
+<Base
+    title="Projects"
+    description="A 7B text-to-SQL model that ties a 1.6T frontier model, open models and datasets on Hugging Face, and a sandbox that detonates dependencies before your agent installs them."
+>
+    <article>
+        <h1>Projects</h1>
+
+        <p class="lede">
+            Everything here is public &mdash; models on
+            <a href="https://huggingface.co/jk200201">Hugging Face</a>, code on
+            <a href="https://github.com/jenishk20">GitHub</a>. Download counts are
+            read from the API when this page is built, not typed in by hand.
+        </p>
+
+        <h2>A 7B that ties a 1.6T model at text-to-SQL</h2>
+        <p>
+            <Tag tag="post-training" />
+            <a href="https://github.com/jenishk20/finetuning-text-to-sql"
+                >finetuning-text-to-sql</a
+            >{showStars && <span class="date"> &middot; {formatCount(mainRepo.stars)} stars</span>}
+        </p>
+        <p>
+            Qwen2.5-Coder-7B, post-trained and benchmarked on BIRD dev (1,534
+            questions). Accuracy means <em>result</em> accuracy: every generated
+            query is executed against the real database and the result sets are
+            compared. No fuzzy string matching, no exact-match SQL scoring, because
+            both of those lie.
+        </p>
+
+        <table>
+            <thead>
+                <tr><th>Model</th><th>Params</th><th>Accuracy</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>GLM 5.2</td><td>744B</td><td>63.0%</td></tr>
+                <tr><td>DeepSeek V4-Pro</td><td>1.6T</td><td>58.7%</td></tr>
+                <tr>
+                    <td><strong>This work, 7B + Best-of-N</strong></td>
+                    <td><strong>7B</strong></td>
+                    <td><strong>58.5%</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            A 7B ties a 1.6T model at roughly <strong>0.4% of the parameters</strong>,
+            and runs locally. GLM 5.2 still wins outright &mdash; this is a
+            parameter-efficiency result, not a superiority one. The two things that
+            moved the needle were distilling the teacher's <em>reasoning</em> rather
+            than its SQL (+5.2pp, and it generalized to unseen databases) and
+            execution-based majority voting at inference (+6.4pp, no retraining).
+            {
+                writeupLive && (
+                    <>
+                        Full training ladder and ablations in{' '}
+                        <a href={`/${WRITEUP_SLUG}/`}>the write-up</a>.
+                    </>
+                )
+            }
+        </p>
+
+        <h2>Open models &amp; datasets</h2>
+        <p>
+            <Tag tag="local" /> {formatCount(totalAllTime)} downloads all time.
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Artifact</th>
+                    <th>Type</th>
+                    <th>All time</th>
+                    <th>30 days</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    withStats.map((a) => (
+                        <tr>
+                            <td><a href={a.href}>{a.label}</a></td>
+                            <td>{a.type}</td>
+                            <td><strong>{formatCount(a.stats.downloadsAllTime)}</strong></td>
+                            <td class="date">{formatCount(a.stats.downloads30d)}</td>
+                        </tr>
+                    ))
+                }
+                <tr>
+                    <td>
+                        <a href="https://huggingface.co/spaces/jk200201/text2sql-live"
+                            >LocalSQL</a
+                        >
+                    </td>
+                    <td>Space &middot; ask a question, get SQL, run it live</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="lede" style="font-size:12px">
+            All time is cumulative; 30 days is a moving window that decays after a
+            spike. Shown separately because quoting one as the other is the easiest
+            way to be wrong by an order of magnitude.
+            {anyStale && ' Some rows fell back to a recorded measurement — the API was unreachable at build time.'}
+        </p>
+
+        <h2>Detonating dependencies before your agent installs them</h2>
+        <p>
+            <Tag tag="agents" />
+            <a href="https://github.com/jenishk20/package-quarantine">package-quarantine</a>
+        </p>
+        <p>
+            Supply-chain attacks like the LiteLLM and <code>ctx</code> PyPI hijacks
+            fire at <em>install time</em>, so static CVE scanners miss them entirely.
+            This intercepts <code>pip</code> and <code>npm</code>, runs the package in
+            a Docker honeypot seeded with canary credentials, and watches at the OS
+            boundary with <code>strace</code> &mdash; because <code>postinstall</code>
+            hooks spawn child processes that in-process monkey-patching never sees.
+        </p>
+
+        <h2>Research</h2>
+        <p>
+            <Tag tag="research" />
+            <strong>Automatic Highlight Generation</strong>, IEEE ICAD 2026 &mdash;
+            <a href="https://github.com/jenishk20/Automatic-Highlight-Generation"
+                >paper repo</a
+            >. A ResNet3D classifier for goal detection in football footage at 82%
+            accuracy and 88% recall; a sliding-window pipeline condenses a 90-minute
+            match in under 15 minutes while capturing 95% of key events.
+        </p>
+
+        <h2>Also</h2>
+        <p>
+            Learning repos:
+            <a href="https://github.com/jenishk20/dpo-text2sql-lab">DPO from first principles</a>
+            (six notebooks, <code>y = 3x + 2</code> up to DPO on real preference
+            pairs) and
+            <a href="https://github.com/jenishk20/grpo-text-2-sql">GRPO with the SQL executor as the reward function</a>,
+            plus its <a href="https://github.com/jenishk20/sql-agent-rl-env">RL environment</a>.
+            <a href="https://github.com/jenishk20/MedSignal">MedSignal</a> runs
+            clinical intelligence entirely on-device.
+            <a href="https://github.com/jenishk20/drift-sentinel">Drift Sentinel</a>
+            catches schema changes that degrade ML models without breaking any
+            pipeline.
+            <a href="https://github.com/jenishk20/splitwise-splitter">SplitMate</a>
+            has split $23K+ across 182+ receipts for 22+ people.
+        </p>
+    </article>
+</Base>

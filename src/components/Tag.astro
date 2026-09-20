@@ -1,0 +1,25 @@
+---
+import { TAGS } from '../consts';
+
+interface Props {
+    tag?: string;
+    /** Render as a link to the tag's index page. */
+    link?: boolean;
+}
+
+const { tag, link = false } = Astro.props;
+
+// An unknown slug still renders, just in grey, so a typo in frontmatter is
+// visible rather than silently dropping the tag.
+const label = tag ? (TAGS[tag] ?? tag) : null;
+const className = tag && TAGS[tag] ? `tag tag-${tag}` : 'tag tag-default';
+---
+
+{
+    label &&
+        (link ? (
+            <a href={`/tags/${tag}/`} class={className}>{label}</a>
+        ) : (
+            <span class={className}>{label}</span>
+        ))
+}

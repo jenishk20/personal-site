@@ -1,0 +1,104 @@
+---
+/**
+ * View count + like button, both fed by one request to
+ * functions/api/counters/[slug].js.
+ *
+ * On load the script POSTs {type:"view"}, which records the view and returns
+ * both totals. The view number is written into the `[data-views]` span that
+ * Post.astro puts in the meta line; the like button lives here at the foot of
+ * the article.
+ *
+ * Progressive enhancement throughout: the button ships hidden and disabled, and
+ * the views span ships empty. If the API is unreachable — no KV binding, or
+ * `astro dev` with no Cloudflare runtime — neither ever appears, so a missing
+ * binding degrades to the plain static page rather than a broken control.
+ */
+interface Props {
+    slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+<button class="like" data-like-button data-slug={slug} disabled hidden>
+    <span class="like-heart" aria-hidden="true">&#9825;</span>
+    <span class="like-label">Like</span>
+    <span class="like-count"></span>
+</button>
+
+<script>
+    const button = document.querySelector<HTMLButtonElement>('[data-like-button]');
+    const viewsEl = document.querySelector<HTMLElement>('[data-views]');
+
+    if (button) {
+        const slug = button.dataset.slug!;
+        const endpoint = `/api/counters/${slug}`;
+        const storageKey = `liked:${slug}`;
+        const countEl = button.querySelector<HTMLElement>('.like-count')!;
+        const heartEl = button.querySelector<HTMLElement>('.like-heart')!;
+        const labelEl = button.querySelector<HTMLElement>('.like-label')!;
+
+        const hasLiked = () => localStorage.getItem(storageKey) === '1';
+
+        const renderLikes = (count: number) => {
+            countEl.textContent = count > 0 ? String(count) : '';
+            const liked = hasLiked();
+            button.dataset.liked = String(liked);
+            heartEl.innerHTML = liked ? '&#9829;' : '&#9825;';
+            labelEl.textContent = liked ? 'Liked' : 'Like';
+            button.setAttribute(
+                'aria-label',
+                `${count} ${count === 1 ? 'like' : 'likes'}${liked ? ', you liked this' : ''}`,
+            );
+        };
+
+        const renderViews = (count: number) => {
+            if (!viewsEl || count <= 0) return;
+            viewsEl.textContent = `${count.toLocaleString('en-US')} ${count === 1 ? 'view' : 'views'}`;
+            viewsEl.hidden = false;
+        };
+
+        try {
+            // Records the view and returns both counters in one round trip.
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ type: 'view' }),
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            const { likes, views } = await res.json();
+
+            renderViews(views ?? 0);
+
+            button.hidden = false;
+            button.disabled = false;
+            renderLikes(likes ?? 0);
+
+            button.addEventListener('click', async () => {
+                if (hasLiked()) return;
+
+                // Optimistic, then reconcile with whatever the server says.
+                localStorage.setItem(storageKey, '1');
+                renderLikes(Number(countEl.textContent || 0) + 1);
+                button.disabled = true;
+
+                try {
+                    const post = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'content-type': 'application/json' },
+                        body: JSON.stringify({ type: 'like' }),
+                    });
+                    if (post.ok) {
+                        const data = await post.json();
+                        renderLikes(data.likes);
+                        renderViews(data.views ?? 0);
+                    }
+                } catch {
+                    // Keep the optimistic state; it self-corrects on reload.
+                }
+            });
+        } catch {
+            // No API available. Button stays hidden, views stay empty.
+        }
+    }
+</script>

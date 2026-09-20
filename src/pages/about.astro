@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE, SOCIALS } from '../consts';
+---
+
+<Base
+    title="About"
+    description="Jenish Kothari — Software Engineer II at Adobe, MS CS Northeastern. Post-training, small local models, and execution-verified evaluation."
+>
+    <article>
+        <h1>About</h1>
+
+        <p>
+            I'm Jenish Kothari. Software Engineer II at <strong>Adobe</strong> in
+            Salt Lake City, and an MS CS graduate of <strong>Northeastern
+            University</strong> (2026). Before that, BS Computer Science at Nirma
+            University.
+        </p>
+
+        <p>
+            My work is post-training: SFT, reasoning distillation, DPO, and GRPO.
+            At Adobe I distilled a production LLM down to a 3B parameter model,
+            cutting inference cost 10&times; while holding 72% of GPT-4 benchmarks.
+            On my own time I do the same thing for text-to-SQL, evaluated by
+            executing every generated query against the real database and comparing
+            result sets.
+        </p>
+
+        <p>
+            The thread running through all of it is <em>local</em>. A 7B that fits on
+            one GPU and matches a 1.6T frontier model is worth more to most teams
+            than an API call, so that's what I optimize for. See
+            <a href="/projects/">Projects</a> for the numbers.
+        </p>
+
+        <h2>Experience</h2>
+        <table>
+            <thead>
+                <tr><th>Where</th><th>Role</th><th>When</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Adobe</strong></td>
+                    <td>Software Engineer II &middot; Salt Lake City, UT</td>
+                    <td>Jun 2026 &ndash; present</td>
+                </tr>
+                <tr>
+                    <td><strong>Dell Technologies</strong></td>
+                    <td>Software Engineer Intern &middot; Boston, MA</td>
+                    <td>Aug 2025 &ndash; Dec 2025</td>
+                </tr>
+                <tr>
+                    <td><strong>Adobe</strong></td>
+                    <td>Software Engineer Intern &middot; Salt Lake City, UT</td>
+                    <td>May 2025 &ndash; Aug 2025</td>
+                </tr>
+                <tr>
+                    <td><strong>ZS Associates</strong></td>
+                    <td>Software Engineer &middot; Pune, India</td>
+                    <td>Aug 2022 &ndash; Dec 2023</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            Recent platform work: migrated access control for 5,000+ approval
+            templates from MongoDB to a Zanzibar-style AuthZ service with a phased
+            backfill and zero-downtime cutover, plus an automated reconciliation
+            audit that caught orphaned templates from partial-failure edge cases
+            before they reached customers.
+        </p>
+
+        <p>
+            Published at <strong>IEEE ICAD 2026</strong>. Won the
+            <a href="https://www.kaggle.com/competitions/build-with-gemma-justbuild"
+                >Build with Gemma</a
+            > hackathon (Kaggle &times; <a href="https://justbuild.ing">JustBuild</a>),
+            the Confluent Kafka hackathon, and Best Project at the Harvard AI
+            Hackathon. Mostly Python and PyTorch, with whatever else the problem
+            needs.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+            Most responsive on <a href={SOCIALS.x}>X DMs</a>. Email:
+            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Also on
+            <a href={SOCIALS.linkedin}>LinkedIn</a>,
+            <a href={SOCIALS.github}>GitHub</a>,
+            <a href={SOCIALS.huggingface}>Hugging Face</a>, and
+            <a href={SOCIALS.kaggle}>Kaggle</a>.
+        </p>
+    </article>
+</Base>

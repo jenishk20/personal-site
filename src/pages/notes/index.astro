@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { publish } from '../../utils/format';
+
+const notes = publish(await getCollection('notes'));
+---
+
+<Base
+    title="Notes"
+    description="Short notes, findings, and things learned in passing. Lower bar than the essays."
+>
+    <article>
+        <h1>Notes</h1>
+        <p class="lede">
+            Short things: a flag that mattered, a number that surprised me, a
+            failure worth writing down. Deliberately a lower bar than
+            <a href="/writing/">the essays</a>.
+        </p>
+        <PostList items={notes} base="/notes/" showDescription />
+    </article>
+</Base>

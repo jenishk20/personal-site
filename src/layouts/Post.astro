@@ -1,0 +1,59 @@
+---
+import Base from './Base.astro';
+import Tag from '../components/Tag.astro';
+import PostStats from '../components/PostStats.astro';
+import { formatDate } from '../utils/format';
+
+interface Props {
+    title: string;
+    date: Date;
+    description?: string;
+    tag?: string;
+    updated?: Date;
+    likes?: boolean;
+    slug: string;
+    /** Raw markdown, used only for the reading-time estimate. */
+    body?: string;
+    backHref?: string;
+    backLabel?: string;
+}
+
+const {
+    title,
+    date,
+    description,
+    tag,
+    updated,
+    likes = true,
+    slug,
+    body = '',
+    backHref = '/writing/',
+    backLabel = 'All writing',
+} = Astro.props;
+
+const words = body.trim().split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+---
+
+<Base title={title} description={description} type="article" publishedAt={date}>
+    <article>
+        <h1>{title}</h1>
+
+        <p class="meta">
+            {tag && <><Tag tag={tag} link /> &nbsp;</>}
+            <time datetime={date.toISOString()}>{formatDate(date)}</time>
+            {updated && <> &middot; updated {formatDate(updated)}</>}
+            {words > 0 && <> &middot; {minutes} min read</>}
+            {/* Filled in by PostStats once the counter API responds. */}
+            {likes && <> &middot; <span class="views" data-views hidden></span></>}
+        </p>
+
+        <div class="prose">
+            <slot />
+        </div>
+
+        {likes && <PostStats slug={slug} />}
+    </article>
+
+    <p style="margin-top:2.5rem"><a href={backHref}>&larr; {backLabel}</a></p>
+</Base>

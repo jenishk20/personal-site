@@ -1,0 +1,52 @@
+---
+import Tag from './Tag.astro';
+import { formatDate } from '../utils/format';
+
+interface Item {
+    id: string;
+    data: {
+        title: string;
+        date: Date;
+        description?: string;
+        tag?: string;
+        draft?: boolean;
+    };
+}
+
+interface Props {
+    items: Item[];
+    /** Prefix for the generated hrefs; posts live at the root by default. */
+    base?: string;
+    showDescription?: boolean;
+}
+
+const { items, base = '/', showDescription = false } = Astro.props;
+---
+
+{
+    items.length === 0 ? (
+        <p class="lede">Nothing here yet.</p>
+    ) : (
+        <table class="index-table">
+            <tbody>
+                {items.map((item) => (
+                    <tr>
+                        <td><Tag tag={item.data.tag} /></td>
+                        <td>
+                            <a href={`${base}${item.id}/`}>{item.data.title}</a>
+                            {item.data.draft && (
+                                <> <span class="tag tag-default">Draft</span></>
+                            )}
+                            <span class="date"> &middot; {formatDate(item.data.date)}</span>
+                            {showDescription && item.data.description && (
+                                <div class="lede" style="font-size:13px">
+                                    {item.data.description}
+                                </div>
+                            )}
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    )
+}

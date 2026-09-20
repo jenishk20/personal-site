@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import Tag from '../components/Tag.astro';
+import { SOCIALS } from '../consts';
+
+/**
+ * The hub page. This is the best structural idea on chrisbarber.co: one tagged
+ * table that indexes everything worth reading, wherever it lives — your own
+ * posts, your repos, your models, your threads. Add rows over time; a row
+ * with an empty tag cell continues the group above it.
+ */
+---
+
+<Base
+    title="Start Here"
+    description="The best of Jenish Kothari's work — post-training results, open models and datasets, agentic systems, and research."
+>
+    <article>
+        <h1>Start Here</h1>
+
+        <p>
+            I'm Jenish. Software engineer at Adobe, working on post-training. The
+            work I care most about is making a small model that runs on one GPU do
+            what people currently pay a frontier API to do &mdash; and proving it
+            with evaluation that <em>executes</em> the output instead of
+            string-matching it.
+        </p>
+
+        <table class="index-table">
+            <tbody>
+                <tr>
+                    <td><Tag tag="post-training" /></td>
+                    <td>
+                        <a href="https://github.com/jenishk20/finetuning-text-to-sql"
+                            >Text-to-SQL on a small model</a
+                        > &mdash; execution-verified study on Qwen2.5-Coder-7B/14B,
+                        benchmarked on BIRD. A 7B ties DeepSeek V4-Pro (1.6T) at
+                        roughly 0.4% of the parameters.
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        If you're learning DPO: <a
+                            href="https://github.com/jenishk20/dpo-text2sql-lab"
+                            >DPO Text-to-SQL Lab</a
+                        > &mdash; six notebooks from <code>y = 3x + 2</code> up to
+                        DPO on real preference pairs.
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        If you're learning GRPO: <a
+                            href="https://github.com/jenishk20/grpo-text-2-sql"
+                            >grpo-text-2-sql</a
+                        > &mdash; the SQL executor <em>is</em> the reward function, so
+                        there's no reward model and no preference pairs to build.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><Tag tag="local" /></td>
+                    <td>
+                        <a href="https://huggingface.co/jk200201/qwen2.5-coder-7b-bird-cot"
+                            >qwen2.5-coder-7b-bird-cot</a
+                        > &mdash; reasoning-distilled text-to-SQL model.
+                        <a
+                            href="https://huggingface.co/jk200201/qwen2.5-coder-7b-bird-cot-GGUF"
+                            >GGUF build</a
+                        > for local inference.
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="https://huggingface.co/spaces/jk200201/text2sql-live"
+                            >LocalSQL</a
+                        > &mdash; ask a question, get SQL, run it live.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><Tag tag="evals" /></td>
+                    <td>
+                        Datasets: <a
+                            href="https://huggingface.co/datasets/jk200201/bird-cot-sft"
+                            >bird-cot-sft</a
+                        > (CoT traces distilled from Qwen3-Coder-480B),
+                        <a href="https://huggingface.co/datasets/jk200201/spider-dpo-1040"
+                            >spider-dpo-1040</a
+                        > (1,040 execution-verified preference pairs).
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="https://github.com/jenishk20/sql-agent-rl-env"
+                            >sql-agent-rl-env</a
+                        > &mdash; the RL environment for SQL agents.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><Tag tag="agents" /></td>
+                    <td>
+                        <a href="https://github.com/jenishk20/package-quarantine"
+                            >package-quarantine</a
+                        > &mdash; detonates dependencies in a honeypot sandbox before
+                        your coding agent installs them.
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="https://github.com/jenishk20/MedSignal">MedSignal</a>
+                        &mdash; local-first clinical intelligence, running entirely
+                        on-device.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><Tag tag="systems" /></td>
+                    <td>
+                        <a href="https://github.com/jenishk20/drift-sentinel"
+                            >Drift Sentinel</a
+                        > &mdash; catches the schema changes that quietly degrade ML
+                        models without breaking any pipeline.
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="https://github.com/jenishk20/splitwise-splitter"
+                            >SplitMate</a
+                        > &mdash; receipt photos to itemized group splits. 22+ users,
+                        $23K+ split across 182+ receipts.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><Tag tag="research" /></td>
+                    <td>
+                        <strong>Automatic Highlight Generation</strong>, IEEE ICAD 2026
+                        &mdash;
+                        <a
+                            href="https://github.com/jenishk20/Automatic-Highlight-Generation"
+                            >paper repo</a
+                        >. 82% accuracy, 88% recall on goal detection; condenses a
+                        90-minute match in under 15 minutes.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            Everything else is on <a href={SOCIALS.github}>GitHub</a> and
+            <a href={SOCIALS.huggingface}>Hugging Face</a>. Most responsive contact:
+            <a href={SOCIALS.x}>X DMs</a>.
+        </p>
+    </article>
+</Base>

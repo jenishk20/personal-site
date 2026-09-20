@@ -1,0 +1,138 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import { SITE, NAV, SOCIALS } from '../consts';
+
+interface Props {
+    title?: string;
+    description?: string;
+    /** Set on article pages so search engines get the right schema type. */
+    type?: 'website' | 'article';
+    publishedAt?: Date;
+    /** Suppress the JSON-LD Person block on pages that aren't the homepage. */
+    isHome?: boolean;
+}
+
+const {
+    title,
+    description = SITE.description,
+    type = 'website',
+    publishedAt,
+    isHome = false,
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${SITE.title}` : SITE.title;
+
+// Derived from `site` in astro.config.mjs — always ends in a slash.
+// The localhost fallback only applies if `site` is ever unset.
+const siteUrl = Astro.site?.href ?? 'http://localhost:4321/';
+const canonical = new URL(Astro.url.pathname, siteUrl).href;
+const currentPath = Astro.url.pathname;
+
+const personSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+        {
+            '@type': 'Person',
+            '@id': `${siteUrl}#person`,
+            name: SITE.author,
+            url: siteUrl,
+            description: SITE.tagline,
+            jobTitle: 'Software Engineer II',
+            worksFor: { '@type': 'Organization', name: 'Adobe' },
+            alumniOf: [
+                { '@type': 'CollegeOrUniversity', name: 'Northeastern University' },
+                { '@type': 'CollegeOrUniversity', name: 'Nirma University' },
+            ],
+            knowsAbout: [
+                'Post-training',
+                'Reinforcement learning from human feedback',
+                'Direct Preference Optimization',
+                'Text-to-SQL',
+                'Local language models',
+            ],
+            sameAs: Object.values(SOCIALS),
+        },
+        {
+            '@type': 'WebSite',
+            '@id': `${siteUrl}#website`,
+            name: SITE.title,
+            url: siteUrl,
+            author: { '@id': `${siteUrl}#person` },
+            publisher: { '@id': `${siteUrl}#person` },
+        },
+    ],
+};
+---
+
+<!doctype html>
+<html lang={SITE.locale}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{pageTitle}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+
+        <meta property="og:type" content={type} />
+        <meta property="og:title" content={title ?? SITE.title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:site_name" content={SITE.title} />
+        {
+            publishedAt && (
+                <meta
+                    property="article:published_time"
+                    content={publishedAt.toISOString()}
+                />
+            )
+        }
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:creator" content="@JenishKothari11" />
+
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title={SITE.title}
+            href={`${siteUrl}rss.xml`}
+        />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+        {
+            isHome && (
+                <script
+                    type="application/ld+json"
+                    set:html={JSON.stringify(personSchema)}
+                />
+            )
+        }
+    </head>
+    <body>
+        <main>
+            <nav>
+                {
+                    NAV.map((item) => (
+                        <a
+                            href={item.href}
+                            aria-current={currentPath === item.href ? 'page' : undefined}
+                        >
+                            {item.label}
+                        </a>
+                    ))
+                }
+            </nav>
+
+            <slot />
+
+            <footer>
+                <p>
+                    {SITE.author} &middot; <a href={SOCIALS.x}>X</a> &middot;
+                    <a href={SOCIALS.github}>GitHub</a> &middot;
+                    <a href={SOCIALS.huggingface}>Hugging Face</a> &middot;
+                    <a href={SOCIALS.linkedin}>LinkedIn</a> &middot;
+                    <a href="/rss.xml">RSS</a>
+                </p>
+            </footer>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from 'astro:content';
+import Post from '../layouts/Post.astro';
+import { publish } from '../utils/format';
+
+// Writing lives at the root — /the-post-title/ — the way chrisbarber.co does it.
+// Only slugs returned here are built, so these never collide with the static
+// routes like /about/ or /projects/.
+export async function getStaticPaths() {
+    const posts = publish(await getCollection('writing'));
+    return posts.map((post) => ({
+        params: { slug: post.id },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Post
+    title={post.data.title}
+    date={post.data.date}
+    description={post.data.description}
+    tag={post.data.tag}
+    updated={post.data.updated}
+    likes={post.data.likes}
+    slug={post.id}
+    body={post.body}
+>
+    <Content />
+</Post>
