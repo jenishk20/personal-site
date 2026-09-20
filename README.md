@@ -108,7 +108,11 @@ Push this directory to a GitHub repo, then in the Cloudflare dashboard:
 | Framework preset | Astro |
 | Build command | `npm run build` |
 | Build output directory | `dist` |
-| Root directory | `personal-site` (if the repo root is one level up) |
+| Root directory | `/` — the repo root is the project |
+
+`.node-version` pins Node to 22.13.1. Without it, Cloudflare's build image picks its
+own (currently newer) Node and npm, and `npm ci` can fail against a lockfile generated
+by npm 10. Bump the file deliberately rather than letting the image decide.
 
 Every push to `main` deploys; every other branch gets a preview URL.
 
