@@ -1,0 +1,28 @@
+---
+import RatingChart from './RatingChart.astro';
+import { codeforcesHistory, leetcodeHistory } from '../lib/stats';
+
+/**
+ * Both contest-rating charts. Used on the homepage and /about/; the fetchers
+ * are memoised per build, so rendering it twice costs one API call each.
+ */
+const cf = await codeforcesHistory('jk_neu');
+const lc = await leetcodeHistory('jk20');
+---
+
+<p class="lede">
+    <a href="https://codeforces.com/profile/jk_neu">Codeforces jk_neu</a>
+    &middot; <a href="https://leetcode.com/u/jk20/">LeetCode jk20</a>
+</p>
+
+{
+    cf.length > 0 && (
+        <RatingChart
+            points={cf}
+            title="Codeforces rating"
+            threshold={{ value: 1600, label: 'Expert' }}
+        />
+    )
+}
+
+{lc.length > 0 && <RatingChart points={lc} title="LeetCode contest rating" />}

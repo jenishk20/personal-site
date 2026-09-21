@@ -5,6 +5,7 @@ import PostList from '../components/PostList.astro';
 import { SITE, SOCIALS } from '../consts';
 import { publish } from '../utils/format';
 import { codeforces, leetcode, titleCase } from '../lib/stats';
+import ContestCharts from '../components/ContestCharts.astro';
 
 const writing = publish(await getCollection('writing')).slice(0, 5);
 
@@ -41,6 +42,8 @@ const lc = await leetcode('jk20');
             {cf.maxRating && <> (max {cf.maxRating})</>}
             &middot; ICPC North America Regionalist
         </p>
+
+        <ContestCharts />
 
         <p>
             <strong><a href="/start-here/">Start here</a></strong> &middot;

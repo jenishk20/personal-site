@@ -1,25 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import { SITE, SOCIALS } from '../consts';
-import RatingChart from '../components/RatingChart.astro';
-import { codeforces, codeforcesHistory } from '../lib/stats';
+import ContestCharts from '../components/ContestCharts.astro';
 
-/**
- * Rating cards are rendered by third-party services and loaded by the reader's
- * browser, so they are the only external requests on the site. Both are pinned
- * to explicit width/height to avoid layout shift, and swapped by
- * prefers-color-scheme rather than showing a white slab in dark mode.
- *
- * Note: leetcode-stats.vercel.app (KnlnKS) returns "Something went wrong!" for
- * this username, so leetcard is used instead. codeforces-readme-stats has no
- * valid "light" theme — its default is the light card.
- */
-const LC_CARD = 'https://leetcard.jacoblin.cool/jk20?ext=contest';
-
-// Codeforces is charted here rather than embedded: no service renders a rating
-// curve for this handle, and the official API returns the full history.
-const cf = await codeforces('jk_neu');
-const cfHistory = await codeforcesHistory('jk_neu');
 ---
 
 <Base
@@ -100,35 +83,7 @@ const cfHistory = await codeforcesHistory('jk_neu');
         </p>
 
         <h2>Competitive programming</h2>
-        <p class="lede">
-            <a href="https://codeforces.com/profile/jk_neu">Codeforces jk_neu</a>
-            &middot; <a href="https://leetcode.com/u/jk20/">LeetCode jk20</a>
-        </p>
-
-        {
-            cfHistory.length > 0 && (
-                <RatingChart
-                    points={cfHistory}
-                    title="Codeforces rating"
-                    threshold={{ value: 1600, label: 'Expert' }}
-                />
-            )
-        }
-
-        <picture>
-            <source
-                media="(prefers-color-scheme: dark)"
-                srcset={`${LC_CARD}&theme=dark`}
-            />
-            <img
-                class="card-embed"
-                src={`${LC_CARD}&theme=light`}
-                alt="LeetCode stats for jk20: 1,894 problems solved, contest rating 2166, global rank #2,957"
-                width="500"
-                height="400"
-                loading="lazy"
-            />
-        </picture>
+        <ContestCharts />
 
         <h2>Contact</h2>
         <p>

@@ -240,3 +240,38 @@ export function codeforcesHistory(handle: string): Promise<RatingPoint[]> {
         }));
     });
 }
+
+/**
+ * Full LeetCode contest history. Same contract as codeforcesHistory: empty
+ * array on failure, so the chart is skipped rather than showing a stale curve.
+ *
+ * LeetCode has no official API, so this uses the same GraphQL endpoint the site
+ * itself calls. It may be refused from a CI IP.
+ */
+export function leetcodeHistory(username: string): Promise<RatingPoint[]> {
+    return cached(`lc-hist:${username}`, async () => {
+        const query =
+            'query($u:String!){userContestRankingHistory(username:$u)' +
+            '{attended rating contest{startTime}}}';
+        try {
+            const res = await fetch('https://leetcode.com/graphql', {
+                method: 'POST',
+                signal: AbortSignal.timeout(TIMEOUT_MS),
+                headers: {
+                    'content-type': 'application/json',
+                    'user-agent': 'jenishkothari.com build',
+                },
+                body: JSON.stringify({ query, variables: { u: username } }),
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            const hist = (await res.json())?.data?.userContestRankingHistory;
+            if (!Array.isArray(hist)) throw new Error('no history');
+            return hist
+                .filter((c: any) => c.attended)
+                .map((c: any) => ({ t: c.contest.startTime, r: Math.round(c.rating) }));
+        } catch (err) {
+            console.warn(`[stats] leetcode history failed: ${(err as Error).message}`);
+            return [];
+        }
+    });
+}

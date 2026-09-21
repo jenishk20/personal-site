@@ -25,7 +25,24 @@ const { points, title, threshold } = Astro.props;
 
 const W = 680;
 const H = 170;
-const PAD = { t: 14, r: 52, b: 24, l: 42 };
+
+const peak = points.reduce((a, b) => (b.r > a.r ? b : a), points[0]);
+const last = points[points.length - 1];
+
+// When the current rating IS the peak, one marker carries both facts rather
+// than stacking two identical numbers. Compared by value, not timestamp: the
+// peak may have first been reached at an earlier contest.
+const mergedLabel = peak.r === last.r;
+const endLabel = mergedLabel ? `${last.r} peak` : String(last.r);
+
+// The right gutter has to hold the end label (and the threshold label beside
+// it), otherwise the text is clipped by the viewBox. ~6.4px per char at 11px.
+const PAD = {
+    t: 14,
+    r: Math.max(52, Math.round(endLabel.length * 6.4) + 18),
+    b: 24,
+    l: 42,
+};
 const plotW = W - PAD.l - PAD.r;
 const plotH = H - PAD.t - PAD.b;
 
@@ -50,8 +67,6 @@ const step = [100, 200, 250, 500, 1000].find((s) => (yHi - yLo) / s <= 5) ?? 100
 const ticks: number[] = [];
 for (let v = Math.ceil(yLo / step) * step; v <= yHi; v += step) ticks.push(v);
 
-const peak = points.reduce((a, b) => (b.r > a.r ? b : a), points[0]);
-const last = points[points.length - 1];
 const year = (t: number) => new Date(t * 1000).getUTCFullYear();
 
 const caption =
@@ -111,19 +126,27 @@ const caption =
         />
 
         <!-- selective direct labels: peak and current, nothing else -->
-        <circle
-            cx={round(x(peak.t))}
-            cy={round(y(peak.r))}
-            r="4"
-            fill="var(--chart-line)"
-            stroke="var(--bg)"
-            stroke-width="2"
-        />
-        <text
-            x={round(x(peak.t))}
-            y={round(y(peak.r)) - 9}
-            text-anchor="middle"
-            class="chart-value">{peak.r} peak</text>
+        {
+            !mergedLabel && Math.abs(x(peak.t) - x(last.t)) >= 64 && (
+                <>
+                    <circle
+                        cx={round(x(peak.t))}
+                        cy={round(y(peak.r))}
+                        r="4"
+                        fill="var(--chart-line)"
+                        stroke="var(--bg)"
+                        stroke-width="2"
+                    />
+                    <text
+                        x={round(x(peak.t))}
+                        y={round(y(peak.r)) - 9}
+                        text-anchor="middle"
+                        class="chart-value">
+                        {peak.r} peak
+                    </text>
+                </>
+            )
+        }
 
         <circle
             cx={round(x(last.t))}
@@ -134,7 +157,7 @@ const caption =
             stroke-width="2"
         />
         <text x={round(x(last.t)) + 9} y={round(y(last.r)) + 4} class="chart-value"
-            >{last.r}</text
+            >{endLabel}</text
         >
 
         <text x={PAD.l} y={H - 6} class="chart-tick">{year(tMin)}</text>
