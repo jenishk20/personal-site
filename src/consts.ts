@@ -12,7 +12,7 @@ export const SITE = {
     description:
         'Jenish Kothari is a software engineer at Adobe working on post-training — SFT, reasoning distillation, DPO and GRPO. Writing about small local models, execution-verified evals, and agentic systems.',
     author: 'Jenish Kothari',
-    email: 'kothari.je@northeastern.edu',
+    email: 'kotharijenish2001@gmail.com',
     locale: 'en',
 } as const;
 
@@ -20,7 +20,6 @@ export const NAV = [
     { href: '/', label: 'Home' },
     { href: '/writing/', label: 'Writing' },
     { href: '/projects/', label: 'Projects' },
-    { href: '/notes/', label: 'Notes' },
     { href: '/about/', label: 'About' },
 ] as const;
 

@@ -41,6 +41,28 @@ export interface RepoStats {
     live: boolean;
 }
 
+export interface CFStats {
+    rating: number | null;
+    maxRating: number | null;
+    rank: string | null;
+    maxRank: string | null;
+    live: boolean;
+}
+
+export interface LCStats {
+    ranking: number | null;
+    solved: number | null;
+    live: boolean;
+}
+
+/**
+ * Recorded on MEASURED_AT. Codeforces has a real public API; LeetCode does not,
+ * so that one goes through the same GraphQL endpoint the site itself uses and
+ * may be refused from a CI IP — hence the fallback matters more there.
+ */
+const CF_FALLBACK = { rating: 1435, maxRating: 1618, rank: 'specialist', maxRank: 'expert' };
+const LC_FALLBACK = { ranking: 2957, solved: 1894 };
+
 /** Recorded all-time downloads, used only when the API is unreachable. */
 const HF_FALLBACK: Record<string, { allTime: number; month: number; likes: number }> = {
     'jk200201/qwen2.5-coder-7b-bird-cot': { allTime: 3700, month: 377, likes: 2 },
@@ -116,6 +138,61 @@ export function github(repo: string): Promise<RepoStats> {
             live: true,
         };
     });
+}
+
+export function codeforces(handle: string): Promise<CFStats> {
+    return cached(`cf:${handle}`, async () => {
+        const data = await getJSON(
+            `https://codeforces.com/api/user.info?handles=${encodeURIComponent(handle)}`,
+        );
+        const u = data?.status === 'OK' ? data?.result?.[0] : null;
+        if (!u) return { ...CF_FALLBACK, live: false };
+        return {
+            rating: typeof u.rating === 'number' ? u.rating : null,
+            maxRating: typeof u.maxRating === 'number' ? u.maxRating : null,
+            rank: u.rank ?? null,
+            maxRank: u.maxRank ?? null,
+            live: true,
+        };
+    });
+}
+
+export function leetcode(username: string): Promise<LCStats> {
+    return cached(`lc:${username}`, async () => {
+        const query =
+            'query($u:String!){matchedUser(username:$u){profile{ranking}' +
+            ' submitStatsGlobal{acSubmissionNum{difficulty count}}}}';
+        try {
+            const res = await fetch('https://leetcode.com/graphql', {
+                method: 'POST',
+                signal: AbortSignal.timeout(TIMEOUT_MS),
+                headers: {
+                    'content-type': 'application/json',
+                    'user-agent': 'jenishkothari.com build',
+                },
+                body: JSON.stringify({ query, variables: { u: username } }),
+            });
+            if (!res.ok) throw new Error(String(res.status));
+            const m = (await res.json())?.data?.matchedUser;
+            if (!m) throw new Error('no user');
+            const all = m.submitStatsGlobal?.acSubmissionNum?.find(
+                (x: any) => x.difficulty === 'All',
+            );
+            return {
+                ranking: m.profile?.ranking ?? null,
+                solved: all?.count ?? null,
+                live: true,
+            };
+        } catch (err) {
+            console.warn(`[stats] leetcode failed: ${(err as Error).message}`);
+            return { ...LC_FALLBACK, live: false };
+        }
+    });
+}
+
+/** "expert" -> "Expert" */
+export function titleCase(s: string | null): string {
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
 }
 
 /**

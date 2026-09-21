@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import '@fontsource-variable/inter';
 import '../styles/global.css';
 import { SITE, NAV, SOCIALS } from '../consts';
@@ -28,6 +29,13 @@ const pageTitle = title ? `${title} — ${SITE.title}` : SITE.title;
 const siteUrl = Astro.site?.href ?? 'http://localhost:4321/';
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
 const currentPath = Astro.url.pathname;
+
+// Hide Writing from the nav while nothing is published, so the link never
+// leads to an empty page. It reappears on its own with the first post.
+const hasWriting = (await getCollection('writing')).some(
+    (e) => import.meta.env.DEV || !e.data.draft,
+);
+const nav = NAV.filter((item) => item.href !== '/writing/' || hasWriting);
 
 const personSchema = {
     '@context': 'https://schema.org',
@@ -96,7 +104,9 @@ const personSchema = {
             title={SITE.title}
             href={`${siteUrl}rss.xml`}
         />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
         {
             isHome && (
@@ -111,7 +121,7 @@ const personSchema = {
         <main>
             <nav>
                 {
-                    NAV.map((item) => (
+                    nav.map((item) => (
                         <a
                             href={item.href}
                             aria-current={currentPath === item.href ? 'page' : undefined}

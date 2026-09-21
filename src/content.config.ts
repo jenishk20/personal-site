@@ -27,9 +27,4 @@ const writing = defineCollection({
     schema: postSchema,
 });
 
-const notes = defineCollection({
-    loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
-    schema: postSchema,
-});
-
-export const collections = { writing, notes };
+export const collections = { writing };

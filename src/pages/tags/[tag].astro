@@ -7,46 +7,22 @@ import { publish } from '../../utils/format';
 
 export async function getStaticPaths() {
     const writing = publish(await getCollection('writing'));
-    const notes = publish(await getCollection('notes'));
-
-    const tags = new Set(
-        [...writing, ...notes].map((e) => e.data.tag).filter(Boolean) as string[],
-    );
+    const tags = new Set(writing.map((e) => e.data.tag).filter(Boolean) as string[]);
 
     return [...tags].map((tag) => ({
         params: { tag },
-        props: {
-            writing: writing.filter((e) => e.data.tag === tag),
-            notes: notes.filter((e) => e.data.tag === tag),
-        },
+        props: { writing: writing.filter((e) => e.data.tag === tag) },
     }));
 }
 
 const { tag } = Astro.params;
-const { writing, notes } = Astro.props;
+const { writing } = Astro.props;
 const label = TAGS[tag] ?? tag;
 ---
 
 <Base title={label} description={`Everything tagged ${label}.`}>
     <article>
         <h1>{label}</h1>
-
-        {
-            writing.length > 0 && (
-                <>
-                    <h3>Writing</h3>
-                    <PostList items={writing} showDescription />
-                </>
-            )
-        }
-
-        {
-            notes.length > 0 && (
-                <>
-                    <h3>Notes</h3>
-                    <PostList items={notes} base="/notes/" showDescription />
-                </>
-            )
-        }
+        <PostList items={writing} showDescription />
     </article>
 </Base>
