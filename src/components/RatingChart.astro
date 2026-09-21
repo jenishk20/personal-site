@@ -43,15 +43,21 @@ const last = points[points.length - 1];
 const mergedLabel = peak.r === last.r;
 const endLabel = mergedLabel ? `${last.r} peak` : String(last.r);
 
-// The right gutter holds the end label and the reference-line label; sizing it
-// from the text keeps either from being clipped by the viewBox.
+// The reference line's VALUE is drawn on the y axis with the other ticks. A
+// descriptive word ("Expert") additionally sits at the end of the line; a label
+// that is just the number again would be redundant there, so it is dropped.
+const thresholdWord =
+    threshold && threshold.label !== String(threshold.value) ? threshold.label : null;
+
+// The right gutter holds the end label and any word label; sizing it from the
+// text keeps either from being clipped by the viewBox.
 const gutterFor = (s: string) => Math.round(s.length * 6.2) + 16;
 const PAD = {
     t: compact ? 14 : 16,
     r: Math.max(
         compact ? 44 : 52,
         gutterFor(endLabel),
-        threshold ? gutterFor(threshold.label) : 0,
+        thresholdWord ? gutterFor(thresholdWord) : 0,
     ),
     b: compact ? 18 : 24,
     l: compact ? 34 : 42,
@@ -81,10 +87,14 @@ const path = points.map((p) => `${round(x(p.t))},${round(y(p.r))}`).join(' ');
 const maxTicks = compact ? 3 : 5;
 const step =
     [100, 200, 250, 500, 1000].find((s) => (yHi - yLo) / s <= maxTicks) ?? 1000;
+// The reference line prints its own value on the axis, so drop any grid tick
+// whose label would sit on top of it. 11px covers a 10px label plus a hairline
+// of breathing room; without this, Codeforces renders 1500 over 1600.
+const LABEL_MIN_GAP = 11;
 const ticks: number[] = [];
 for (let v = Math.ceil(yLo / step) * step; v <= yHi; v += step) {
-    // The reference line carries its own label; skip a tick on the same value.
-    if (v !== threshold?.value) ticks.push(v);
+    if (threshold && Math.abs(y(v) - y(threshold.value)) < LABEL_MIN_GAP) continue;
+    ticks.push(v);
 }
 
 // At compact width the peak marker is usually too close to the current one to
@@ -138,9 +148,16 @@ const ariaLabel = `${title}: ${detail}`;
                         stroke-width="1"
                     />
                     <text
-                        x={W - PAD.r + 6}
+                        x={PAD.l - 8}
                         y={round(y(threshold.value)) + 3}
-                        class="chart-tick">{threshold.label}</text>
+                        text-anchor="end"
+                        class="chart-tick">{threshold.value}</text>
+                    {thresholdWord && (
+                        <text
+                            x={W - PAD.r + 6}
+                            y={round(y(threshold.value)) + 3}
+                            class="chart-tick">{thresholdWord}</text>
+                    )}
                 </>
             )
         }
