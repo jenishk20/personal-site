@@ -293,6 +293,16 @@ img[width='40'], img[width='50'], img[width='60'], img[width='80'] {
     margin: 1.25em 0;
 }
 
+/* The caption sits above the plot, so it needs bottom spacing, not top. */
+.chart figcaption {
+    margin: 0 0 0.4em;
+    color: var(--text-secondary);
+}
+
+.chart figcaption strong {
+    color: var(--heading);
+}
+
 /* Two sparklines side by side; stacked on narrow screens. */
 .chart-pair {
     display: grid;

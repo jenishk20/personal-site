@@ -4,20 +4,23 @@ import type { RatingPoint } from '../lib/stats';
 /**
  * A contest-rating line chart, rendered as inline SVG at build time.
  *
- * One series, so no legend — the caption names it. Values are direct-labelled
- * selectively (peak and current only, never a number per point), the grid is a
- * solid hairline one shade off the surface, and the line colour is a token
- * validated for contrast against both the light and dark surfaces.
+ * One series, so no legend: the caption above the plot names it. Values are
+ * direct-labelled selectively (peak and current only, never a number per
+ * point), the grid is a solid hairline one shade off the surface, and the line
+ * colour is a token validated for contrast against both surfaces.
  *
- * There is no hover layer, because this site ships no client JavaScript beyond
- * the like button. The two numbers a reader wants are printed on the chart and
- * the full figures sit in the caption, so nothing is reachable only by hovering.
+ * No hover layer, because this site ships no client JavaScript beyond the like
+ * button. Every number a reader wants is printed on the chart or in the
+ * caption, so nothing is reachable only by hovering.
  */
 interface Props {
     points: RatingPoint[];
-    /** Describes the series for screen readers and the visible caption. */
+    /** Names the series, in the caption and for screen readers. */
     title: string;
-    /** Optional reference line, e.g. a rank threshold. */
+    /**
+     * Reference line. If its value sits outside the data range, the y domain
+     * stretches to include it, so a target above the current peak is visible.
+     */
     threshold?: { value: number; label: string };
     /** Half-width sparkline for side-by-side use. */
     compact?: boolean;
@@ -40,11 +43,16 @@ const last = points[points.length - 1];
 const mergedLabel = peak.r === last.r;
 const endLabel = mergedLabel ? `${last.r} peak` : String(last.r);
 
-// The right gutter has to hold the end label (and the threshold label beside
-// it), otherwise the text is clipped by the viewBox. ~6.4px per char at 11px.
+// The right gutter holds the end label and the reference-line label; sizing it
+// from the text keeps either from being clipped by the viewBox.
+const gutterFor = (s: string) => Math.round(s.length * 6.2) + 16;
 const PAD = {
-    t: compact ? 12 : 14,
-    r: Math.max(compact ? 44 : 52, Math.round(endLabel.length * 6.4) + 16),
+    t: compact ? 14 : 16,
+    r: Math.max(
+        compact ? 44 : 52,
+        gutterFor(endLabel),
+        threshold ? gutterFor(threshold.label) : 0,
+    ),
     b: compact ? 18 : 24,
     l: compact ? 34 : 42,
 };
@@ -56,10 +64,13 @@ const tMax = points[points.length - 1].t;
 const rLo = Math.min(...points.map((p) => p.r));
 const rHi = Math.max(...points.map((p) => p.r));
 
-// Pad the value domain so the curve never touches the frame.
-const pad = Math.max(40, (rHi - rLo) * 0.12);
-const yLo = rLo - pad;
-const yHi = rHi + pad;
+// Stretch the domain to cover the reference line, then pad so the curve never
+// touches the frame.
+const domLo = Math.min(rLo, threshold?.value ?? rLo);
+const domHi = Math.max(rHi, threshold?.value ?? rHi);
+const pad = Math.max(40, (domHi - domLo) * 0.1);
+const yLo = domLo - pad;
+const yHi = domHi + pad;
 
 const x = (t: number) => PAD.l + ((t - tMin) / (tMax - tMin)) * plotW;
 const y = (r: number) => PAD.t + (1 - (r - yLo) / (yHi - yLo)) * plotH;
@@ -67,30 +78,34 @@ const y = (r: number) => PAD.t + (1 - (r - yLo) / (yHi - yLo)) * plotH;
 const round = (n: number) => Math.round(n * 10) / 10;
 const path = points.map((p) => `${round(x(p.t))},${round(y(p.r))}`).join(' ');
 
-// 3-5 ticks on a round step.
 const maxTicks = compact ? 3 : 5;
 const step =
     [100, 200, 250, 500, 1000].find((s) => (yHi - yLo) / s <= maxTicks) ?? 1000;
 const ticks: number[] = [];
-for (let v = Math.ceil(yLo / step) * step; v <= yHi; v += step) ticks.push(v);
+for (let v = Math.ceil(yLo / step) * step; v <= yHi; v += step) {
+    // The reference line carries its own label; skip a tick on the same value.
+    if (v !== threshold?.value) ticks.push(v);
+}
+
+// At compact width the peak marker is usually too close to the current one to
+// label separately; the caption carries both numbers either way.
+const labelPeakSeparately = !mergedLabel && Math.abs(x(peak.t) - x(last.t)) >= 64;
 
 const year = (t: number) => new Date(t * 1000).getUTCFullYear();
-
-const caption =
-    `${title}: ${points.length} contests, ${year(tMin)} to ${year(tMax)}. ` +
-    `Peak ${peak.r}, currently ${last.r}.`;
-// At compact width the peak marker is often too close to the current one to
-// label separately, so the caption carries both numbers instead of dropping
-// the peak entirely.
-const visibleCaption = compact
-    ? `${title} · ${points.length} contests · ` +
-      (mergedLabel ? `peak ${peak.r}` : `peak ${peak.r}, now ${last.r}`)
-    : caption;
+const detail = mergedLabel
+    ? `${points.length} contests since ${year(tMin)} · peak ${peak.r}`
+    : `${points.length} contests since ${year(tMin)} · peak ${peak.r}, now ${last.r}`;
+const ariaLabel = `${title}: ${detail}`;
 ---
 
 <figure class="chart">
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={caption} class="rating-chart">
-        <!-- grid: solid hairlines, one shade off the surface -->
+    <figcaption><strong>{title}</strong> &middot; {detail}</figcaption>
+    <svg
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-label={ariaLabel}
+        class="rating-chart"
+    >
         {
             ticks.map((v) => (
                 <>
@@ -112,7 +127,7 @@ const visibleCaption = compact
         }
 
         {
-            threshold && threshold.value > yLo && threshold.value < yHi && (
+            threshold && (
                 <>
                     <line
                         x1={PAD.l}
@@ -139,9 +154,8 @@ const visibleCaption = compact
             stroke-linecap="round"
         />
 
-        <!-- selective direct labels: peak and current, nothing else -->
         {
-            !mergedLabel && Math.abs(x(peak.t) - x(last.t)) >= 64 && (
+            labelPeakSeparately && (
                 <>
                     <circle
                         cx={round(x(peak.t))}
@@ -174,10 +188,9 @@ const visibleCaption = compact
             >{endLabel}</text
         >
 
-        <text x={PAD.l} y={H - 6} class="chart-tick">{year(tMin)}</text>
-        <text x={W - PAD.r} y={H - 6} text-anchor="end" class="chart-tick"
+        <text x={PAD.l} y={H - 5} class="chart-tick">{year(tMin)}</text>
+        <text x={W - PAD.r} y={H - 5} text-anchor="end" class="chart-tick"
             >{year(tMax)}</text
         >
     </svg>
-    <figcaption>{visibleCaption}</figcaption>
 </figure>

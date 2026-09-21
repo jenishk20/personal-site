@@ -20,14 +20,19 @@ const lc = await leetcodeHistory('jk20');
             <RatingChart
                 points={cf}
                 title="Codeforces"
-                threshold={compact ? undefined : { value: 1600, label: 'Expert' }}
+                threshold={{ value: 1600, label: 'Expert' }}
                 compact={compact}
             />
         )
     }
     {
         lc.length > 0 && (
-            <RatingChart points={lc} title="LeetCode" compact={compact} />
+            <RatingChart
+                points={lc}
+                title="LeetCode"
+                threshold={{ value: 2500, label: '2500' }}
+                compact={compact}
+            />
         )
     }
 </div>
