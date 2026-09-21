@@ -10,7 +10,7 @@ export const SITE = {
     tagline:
         'I post-train small open models to do work that usually needs frontier models, in production and in the open.',
     description:
-        'Jenish Kothari is a software engineer at Adobe working on post-training — SFT, reasoning distillation, DPO and GRPO. Writing about small local models, execution-verified evals, and agentic systems.',
+        'Jenish Kothari is a software engineer at Adobe working on post-training: SFT, reasoning distillation, DPO and GRPO. Writing about small local models, execution-verified evals, and agentic systems.',
     author: 'Jenish Kothari',
     email: 'kotharijenish2001@gmail.com',
     locale: 'en',

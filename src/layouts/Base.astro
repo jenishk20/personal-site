@@ -22,7 +22,7 @@ const {
     isHome = false,
 } = Astro.props;
 
-const pageTitle = title ? `${title} — ${SITE.title}` : SITE.title;
+const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
 
 // Derived from `site` in astro.config.mjs — always ends in a slash.
 // The localhost fallback only applies if `site` is ever unset.
