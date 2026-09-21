@@ -279,8 +279,6 @@ img[width='40'], img[width='50'], img[width='60'], img[width='80'] {
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
-        margin-inline: -1rem;
-        padding-inline: 1rem;
     }
 
     .photo-row figure {
