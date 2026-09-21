@@ -1,6 +1,19 @@
 ---
 import Base from '../layouts/Base.astro';
 import { SITE, SOCIALS } from '../consts';
+
+/**
+ * Rating cards are rendered by third-party services and loaded by the reader's
+ * browser, so they are the only external requests on the site. Both are pinned
+ * to explicit width/height to avoid layout shift, and swapped by
+ * prefers-color-scheme rather than showing a white slab in dark mode.
+ *
+ * Note: leetcode-stats.vercel.app (KnlnKS) returns "Something went wrong!" for
+ * this username, so leetcard is used instead. codeforces-readme-stats has no
+ * valid "light" theme — its default is the light card.
+ */
+const CF_CARD = 'https://codeforces-readme-stats.vercel.app/api/card?username=jk_neu';
+const LC_CARD = 'https://leetcard.jacoblin.cool/jk20?ext=contest';
 ---
 
 <Base
@@ -79,6 +92,42 @@ import { SITE, SOCIALS } from '../consts';
             Hackathon. Mostly Python and PyTorch, with whatever else the problem
             needs.
         </p>
+
+        <h2>Competitive programming</h2>
+        <p class="lede">
+            <a href="https://codeforces.com/profile/jk_neu">Codeforces jk_neu</a>
+            &middot; <a href="https://leetcode.com/u/jk20/">LeetCode jk20</a>
+        </p>
+
+        <picture>
+            <source
+                media="(prefers-color-scheme: dark)"
+                srcset={`${CF_CARD}&theme=dark`}
+            />
+            <img
+                class="card-embed"
+                src={CF_CARD}
+                alt="Codeforces rating for jk_neu: 1435 (Specialist), max 1618 (Expert), 93 rated contests"
+                width="380"
+                height="290"
+                loading="lazy"
+            />
+        </picture>
+
+        <picture>
+            <source
+                media="(prefers-color-scheme: dark)"
+                srcset={`${LC_CARD}&theme=dark`}
+            />
+            <img
+                class="card-embed"
+                src={`${LC_CARD}&theme=light`}
+                alt="LeetCode stats for jk20: 1,894 problems solved, contest rating 2166, global rank #2,957"
+                width="500"
+                height="400"
+                loading="lazy"
+            />
+        </picture>
 
         <h2>Contact</h2>
         <p>

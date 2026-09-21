@@ -248,6 +248,13 @@ img[width='40'], img[width='50'], img[width='60'], img[width='80'] {
     border-radius: 50%;
 }
 
+.card-embed {
+    display: block;
+    margin: 1em 0;
+    max-width: 100%;
+    height: auto;
+}
+
 figure {
     margin: 1.5em 0;
 }
