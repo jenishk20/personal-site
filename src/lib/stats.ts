@@ -212,3 +212,31 @@ export function formatCount(n: number | null | undefined): string {
     }
     return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
 }
+
+/** A point in a contest rating history. */
+export interface RatingPoint {
+    /** Unix seconds. */
+    t: number;
+    /** Rating after that contest. */
+    r: number;
+}
+
+/**
+ * Full Codeforces rating history, for the chart on /about/.
+ *
+ * No fallback dataset: a 90-point series is too much to freeze into source, and
+ * a stale curve is worse than none. On failure this returns an empty array and
+ * the chart is simply not rendered.
+ */
+export function codeforcesHistory(handle: string): Promise<RatingPoint[]> {
+    return cached(`cf-hist:${handle}`, async () => {
+        const data = await getJSON(
+            `https://codeforces.com/api/user.rating?handle=${encodeURIComponent(handle)}`,
+        );
+        if (data?.status !== 'OK' || !Array.isArray(data.result)) return [];
+        return data.result.map((c: any) => ({
+            t: c.ratingUpdateTimeSeconds,
+            r: c.newRating,
+        }));
+    });
+}

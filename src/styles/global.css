@@ -20,6 +20,11 @@
     --accent-hover: hsl(258, 88%, 76%);
     --max-width: 720px;
 
+    /* Chart line. Deliberately the same value in both themes: it is the step of
+       the accent ramp that passes the lightness band and 3:1 contrast against
+       the light AND dark chart surfaces. --accent's dark step does not. */
+    --chart-line: #8a5cf5;
+
     /* Category tags. One per topic you write about; keep the list short. */
     --color-post-training: #5a9ea6;
     --color-evals: #3d5a8b;
@@ -246,6 +251,27 @@ img[width='40'], img[width='50'], img[width='60'], img[width='80'] {
     vertical-align: middle;
     margin-right: 0.5em;
     border-radius: 50%;
+}
+
+.chart {
+    margin: 1.25em 0;
+}
+
+.rating-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.chart-tick {
+    font-size: 10px;
+    fill: var(--text-muted);
+}
+
+.chart-value {
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--text-secondary);
 }
 
 .card-embed {

@@ -1,0 +1,146 @@
+---
+import type { RatingPoint } from '../lib/stats';
+
+/**
+ * A contest-rating line chart, rendered as inline SVG at build time.
+ *
+ * One series, so no legend — the caption names it. Values are direct-labelled
+ * selectively (peak and current only, never a number per point), the grid is a
+ * solid hairline one shade off the surface, and the line colour is a token
+ * validated for contrast against both the light and dark surfaces.
+ *
+ * There is no hover layer, because this site ships no client JavaScript beyond
+ * the like button. The two numbers a reader wants are printed on the chart and
+ * the full figures sit in the caption, so nothing is reachable only by hovering.
+ */
+interface Props {
+    points: RatingPoint[];
+    /** Describes the series for screen readers and the visible caption. */
+    title: string;
+    /** Optional reference line, e.g. a rank threshold. */
+    threshold?: { value: number; label: string };
+}
+
+const { points, title, threshold } = Astro.props;
+
+const W = 680;
+const H = 170;
+const PAD = { t: 14, r: 52, b: 24, l: 42 };
+const plotW = W - PAD.l - PAD.r;
+const plotH = H - PAD.t - PAD.b;
+
+const tMin = points[0].t;
+const tMax = points[points.length - 1].t;
+const rLo = Math.min(...points.map((p) => p.r));
+const rHi = Math.max(...points.map((p) => p.r));
+
+// Pad the value domain so the curve never touches the frame.
+const pad = Math.max(40, (rHi - rLo) * 0.12);
+const yLo = rLo - pad;
+const yHi = rHi + pad;
+
+const x = (t: number) => PAD.l + ((t - tMin) / (tMax - tMin)) * plotW;
+const y = (r: number) => PAD.t + (1 - (r - yLo) / (yHi - yLo)) * plotH;
+
+const round = (n: number) => Math.round(n * 10) / 10;
+const path = points.map((p) => `${round(x(p.t))},${round(y(p.r))}`).join(' ');
+
+// 3-5 ticks on a round step.
+const step = [100, 200, 250, 500, 1000].find((s) => (yHi - yLo) / s <= 5) ?? 1000;
+const ticks: number[] = [];
+for (let v = Math.ceil(yLo / step) * step; v <= yHi; v += step) ticks.push(v);
+
+const peak = points.reduce((a, b) => (b.r > a.r ? b : a), points[0]);
+const last = points[points.length - 1];
+const year = (t: number) => new Date(t * 1000).getUTCFullYear();
+
+const caption =
+    `${title}: ${points.length} contests, ${year(tMin)} to ${year(tMax)}. ` +
+    `Peak ${peak.r}, currently ${last.r}.`;
+---
+
+<figure class="chart">
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={caption} class="rating-chart">
+        <!-- grid: solid hairlines, one shade off the surface -->
+        {
+            ticks.map((v) => (
+                <>
+                    <line
+                        x1={PAD.l}
+                        x2={W - PAD.r}
+                        y1={round(y(v))}
+                        y2={round(y(v))}
+                        stroke="var(--border)"
+                        stroke-width="1"
+                    />
+                    <text
+                        x={PAD.l - 8}
+                        y={round(y(v)) + 3}
+                        text-anchor="end"
+                        class="chart-tick">{v}</text>
+                </>
+            ))
+        }
+
+        {
+            threshold && threshold.value > yLo && threshold.value < yHi && (
+                <>
+                    <line
+                        x1={PAD.l}
+                        x2={W - PAD.r}
+                        y1={round(y(threshold.value))}
+                        y2={round(y(threshold.value))}
+                        stroke="var(--text-muted)"
+                        stroke-width="1"
+                    />
+                    <text
+                        x={W - PAD.r + 6}
+                        y={round(y(threshold.value)) + 3}
+                        class="chart-tick">{threshold.label}</text>
+                </>
+            )
+        }
+
+        <polyline
+            points={path}
+            fill="none"
+            stroke="var(--chart-line)"
+            stroke-width="2"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+        />
+
+        <!-- selective direct labels: peak and current, nothing else -->
+        <circle
+            cx={round(x(peak.t))}
+            cy={round(y(peak.r))}
+            r="4"
+            fill="var(--chart-line)"
+            stroke="var(--bg)"
+            stroke-width="2"
+        />
+        <text
+            x={round(x(peak.t))}
+            y={round(y(peak.r)) - 9}
+            text-anchor="middle"
+            class="chart-value">{peak.r} peak</text>
+
+        <circle
+            cx={round(x(last.t))}
+            cy={round(y(last.r))}
+            r="4"
+            fill="var(--chart-line)"
+            stroke="var(--bg)"
+            stroke-width="2"
+        />
+        <text x={round(x(last.t)) + 9} y={round(y(last.r)) + 4} class="chart-value"
+            >{last.r}</text
+        >
+
+        <text x={PAD.l} y={H - 6} class="chart-tick">{year(tMin)}</text>
+        <text x={W - PAD.r} y={H - 6} text-anchor="end" class="chart-tick"
+            >{year(tMax)}</text
+        >
+    </svg>
+    <figcaption>{caption}</figcaption>
+</figure>
