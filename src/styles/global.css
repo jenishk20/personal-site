@@ -257,6 +257,19 @@ img[width='40'], img[width='50'], img[width='60'], img[width='80'] {
     margin: 1.25em 0;
 }
 
+/* Two sparklines side by side; stacked on narrow screens. */
+.chart-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.5rem;
+}
+
+@media (max-width: 600px) {
+    .chart-pair {
+        grid-template-columns: 1fr;
+    }
+}
+
 .rating-chart {
     display: block;
     width: 100%;

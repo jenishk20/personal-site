@@ -19,12 +19,17 @@ interface Props {
     title: string;
     /** Optional reference line, e.g. a rank threshold. */
     threshold?: { value: number; label: string };
+    /** Half-width sparkline for side-by-side use. */
+    compact?: boolean;
 }
 
-const { points, title, threshold } = Astro.props;
+const { points, title, threshold, compact = false } = Astro.props;
 
-const W = 680;
-const H = 170;
+// The viewBox is narrower in compact mode rather than just scaled down: an SVG
+// scales its text with everything else, so a half-width 680px viewBox would
+// render 10px labels at 5px.
+const W = compact ? 340 : 680;
+const H = compact ? 124 : 170;
 
 const peak = points.reduce((a, b) => (b.r > a.r ? b : a), points[0]);
 const last = points[points.length - 1];
@@ -38,10 +43,10 @@ const endLabel = mergedLabel ? `${last.r} peak` : String(last.r);
 // The right gutter has to hold the end label (and the threshold label beside
 // it), otherwise the text is clipped by the viewBox. ~6.4px per char at 11px.
 const PAD = {
-    t: 14,
-    r: Math.max(52, Math.round(endLabel.length * 6.4) + 18),
-    b: 24,
-    l: 42,
+    t: compact ? 12 : 14,
+    r: Math.max(compact ? 44 : 52, Math.round(endLabel.length * 6.4) + 16),
+    b: compact ? 18 : 24,
+    l: compact ? 34 : 42,
 };
 const plotW = W - PAD.l - PAD.r;
 const plotH = H - PAD.t - PAD.b;
@@ -63,7 +68,9 @@ const round = (n: number) => Math.round(n * 10) / 10;
 const path = points.map((p) => `${round(x(p.t))},${round(y(p.r))}`).join(' ');
 
 // 3-5 ticks on a round step.
-const step = [100, 200, 250, 500, 1000].find((s) => (yHi - yLo) / s <= 5) ?? 1000;
+const maxTicks = compact ? 3 : 5;
+const step =
+    [100, 200, 250, 500, 1000].find((s) => (yHi - yLo) / s <= maxTicks) ?? 1000;
 const ticks: number[] = [];
 for (let v = Math.ceil(yLo / step) * step; v <= yHi; v += step) ticks.push(v);
 
@@ -72,6 +79,13 @@ const year = (t: number) => new Date(t * 1000).getUTCFullYear();
 const caption =
     `${title}: ${points.length} contests, ${year(tMin)} to ${year(tMax)}. ` +
     `Peak ${peak.r}, currently ${last.r}.`;
+// At compact width the peak marker is often too close to the current one to
+// label separately, so the caption carries both numbers instead of dropping
+// the peak entirely.
+const visibleCaption = compact
+    ? `${title} · ${points.length} contests · ` +
+      (mergedLabel ? `peak ${peak.r}` : `peak ${peak.r}, now ${last.r}`)
+    : caption;
 ---
 
 <figure class="chart">
@@ -165,5 +179,5 @@ const caption =
             >{year(tMax)}</text
         >
     </svg>
-    <figcaption>{caption}</figcaption>
+    <figcaption>{visibleCaption}</figcaption>
 </figure>

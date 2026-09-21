@@ -2,10 +2,10 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
+import ContestCharts from '../components/ContestCharts.astro';
 import { SITE, SOCIALS } from '../consts';
 import { publish } from '../utils/format';
 import { codeforces, leetcode, titleCase } from '../lib/stats';
-import ContestCharts from '../components/ContestCharts.astro';
 
 const writing = publish(await getCollection('writing')).slice(0, 5);
 
@@ -18,48 +18,74 @@ const lc = await leetcode('jk20');
     <article>
         <h1>Jenish Kothari</h1>
 
+        <h2>About</h2>
         <p>
             Software engineer who likes hard problems and small models that
             overperform.
         </p>
-
         <p>
             <strong>8&ndash;4:</strong> System design @ Adobe &mdash; authorization
             infra and asset approval workflows that stay fast and correct at
             enterprise scale.
         </p>
-
         <p>
             <strong>4&ndash;10:</strong> Post-training LLMs + agentic AI &mdash;
             recently fine-tuned a 7B model to beat Grok-4 on Text-to-SQL for $25.
         </p>
 
-        <p class="lede">
-            Guardian @ <a href="https://leetcode.com/u/jk20/">LeetCode</a>
-            {lc.solved && <> ({lc.solved.toLocaleString('en-US')} solved, global #{lc.ranking?.toLocaleString('en-US')})</>}
-            &middot; {titleCase(cf.maxRank)} @
-            <a href="https://codeforces.com/profile/jk_neu">Codeforces</a>
-            {cf.maxRating && <> (max {cf.maxRating})</>}
-            &middot; ICPC North America Regionalist
-        </p>
-
-        <ContestCharts />
-
+        <h2>Interests</h2>
         <p>
-            <strong><a href="/start-here/">Start here</a></strong> &middot;
-            <a href="/projects/">Projects</a> &middot;
-            <a href="/writing/">Writing</a>
+            Post-training &mdash; SFT, reasoning distillation, DPO, GRPO.
+            Evaluation that <em>executes</em> the output instead of string-matching
+            it. And local models above all: a 7B that fits on one GPU and matches a
+            frontier model is worth more to most teams than an API call.
         </p>
+
+        <h2>Achievements</h2>
+        <ul>
+            <li>
+                A 7B ties DeepSeek V4-Pro (1.6T) on BIRD at roughly 0.4% of the
+                parameters &mdash; <a href="/projects/">the numbers</a>
+            </li>
+            <li>
+                <strong>IEEE ICAD 2026</strong> &mdash; published research on
+                automatic highlight generation
+            </li>
+            <li>
+                Winner: <a
+                    href="https://www.kaggle.com/competitions/build-with-gemma-justbuild"
+                    >Build with Gemma</a
+                > (Kaggle &times; JustBuild) &middot; Confluent Kafka &middot; Best
+                Project, Harvard AI Hackathon
+            </li>
+            <li>
+                Guardian @ <a href="https://leetcode.com/u/jk20/">LeetCode</a>
+                {lc.solved && <>({lc.solved.toLocaleString('en-US')} solved)</>}
+                &middot; {titleCase(cf.maxRank)} @
+                <a href="https://codeforces.com/profile/jk_neu">Codeforces</a>
+                {cf.maxRating && <>(max {cf.maxRating})</>} &middot; ICPC North
+                America Regionalist
+            </li>
+        </ul>
+
+        <h2>Competitive programming</h2>
+        <ContestCharts compact />
 
         {
             writing.length > 0 && (
                 <>
-                    <h3>Latest writing</h3>
+                    <h2>Writing</h2>
                     <PostList items={writing} showDescription />
                 </>
             )
         }
 
+        <h2>Elsewhere</h2>
+        <p>
+            <a href="/start-here/">Start here</a> &middot;
+            <a href="/projects/">Projects</a> &middot;
+            <a href="/about/">About</a>
+        </p>
         <p>
             <a href={SOCIALS.github}>GitHub</a> &middot;
             <a href={SOCIALS.huggingface}>Hugging Face</a> &middot;
