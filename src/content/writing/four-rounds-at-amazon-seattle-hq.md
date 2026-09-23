@@ -13,6 +13,7 @@ draft: false
         <tr><th scope="row">Role</th><td>SDE1</td></tr>
         <tr><th scope="row">Location</th><td>Seattle HQ, onsite</td></tr>
         <tr><th scope="row">Date</th><td>August 2026</td></tr>
+        <tr><th scope="row">How it started</th><td>Cold application</td></tr>
         <tr><th scope="row">Rounds</th><td>4</td></tr>
         <tr><th scope="row">Outcome</th><td>Rejected. No feedback.</td></tr>
     </tbody>

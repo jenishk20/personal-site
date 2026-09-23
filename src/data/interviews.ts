@@ -70,6 +70,7 @@ export const interviews: Interview[] = [
         team: 'S3 Glacier',
         type: 'full-time',
         when: '2026-08',
+        source: 'cold-apply',
         reached: 'onsite',
         rounds: 4,
         outcome: 'rejected',
