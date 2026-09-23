@@ -74,7 +74,7 @@ export const interviews: Interview[] = [
         rounds: 4,
         outcome: 'rejected',
         ghosted: true,
-        writeup: 'five-rejections-from-amazon',
+        writeup: 'four-rounds-at-seattle-hq',
         takeaway:
             'Flew to Seattle HQ for four rounds. The recruiter stopped replying; I found out by inference.',
     },

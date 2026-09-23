@@ -1,5 +1,5 @@
 ---
-title: Five rejections from Amazon in three years
+title: Four rounds at Seattle HQ, then nothing
 description: An SDE1 onsite for the S3 Glacier team at Seattle HQ, four rounds, and a recruiter who never called back. What the loop actually measured, and what I think after the fifth one.
 date: 2026-09-22
 tag: interviews
