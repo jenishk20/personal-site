@@ -56,6 +56,7 @@ Five rejections from one company over three years is either a strong signal abou
 
 I gave my best shot and could not have done better. I will not change anything about my preparation. I will continue to solve more problems and hope for luck to favor someday.
 
-<p class="fail-run" role="img" aria-label="fail, fail, fail, fail, fail, try again">
-<span>fail</span><span>fail</span><span>fail</span><span>fail</span><span>fail</span><span class="again">try again</span>
-</p>
+<figure class="poster">
+<img src="/images/fail-poster.webp" alt="Sketch reading FAIL: First Attempt In Learning. Fall. Learn. Rise. Try again. Succeed. A figure sits dejected, then climbs steps, then plants a flag marked SUCCESS on a summit." width="387" height="516" loading="lazy" />
+<figcaption>Illustration by Twar Edge.</figcaption>
+</figure>

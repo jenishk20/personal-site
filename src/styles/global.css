@@ -460,37 +460,25 @@ td:last-child, th:last-child {
     white-space: nowrap;
 }
 
-/* A typographic closing device: one "fail" per rejection, then the turn. Text
-   rather than an image, so it is selectable, searchable, themed, and free. The
-   accumulating weight is carried by opacity rather than by size. */
-.fail-run {
+/* A supplied illustration at the foot of a post. Held to 320px against a
+   387px source so it stays sharp on a retina screen, and set off by the same
+   hairline rule the other closing elements use. */
+.poster {
     margin: 2.5em 0 0;
-    padding-top: 1.25em;
+    padding-top: 1.5em;
     border-top: 1px solid var(--border);
-    font-size: 15px;
-    letter-spacing: -0.2px;
 }
 
-.fail-run span {
-    color: var(--text-muted);
+.poster img {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    border-radius: 4px;
 }
 
-.fail-run span + span::before {
-    content: '·';
-    margin: 0 0.5em;
-    opacity: 0.5;
-}
-
-.fail-run span:nth-child(1) { opacity: 0.45; }
-.fail-run span:nth-child(2) { opacity: 0.55; }
-.fail-run span:nth-child(3) { opacity: 0.68; }
-.fail-run span:nth-child(4) { opacity: 0.82; }
-.fail-run span:nth-child(5) { opacity: 1; }
-
-.fail-run .again {
-    color: var(--accent);
-    font-weight: 600;
-    opacity: 1;
+.poster figcaption {
+    margin-top: 0.5em;
 }
 
 /* Like button ------------------------------------------------------------ */
