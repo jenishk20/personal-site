@@ -1,12 +1,22 @@
 ---
-title: Four rounds at Seattle HQ, then nothing
-description: An SDE1 onsite for the S3 Glacier team at Seattle HQ, four rounds, and a recruiter who never called back. What the loop actually measured, and what I think after the fifth one.
+title: Four rounds at Amazon's Seattle HQ, then nothing
+description: An SDE1 onsite for the AWS S3 Glacier team at Amazon's Seattle HQ, four rounds, and a recruiter who never called back. What the loop actually measured, and what I think after the fifth one.
 date: 2026-09-22
 tag: interviews
 draft: false
 ---
 
-AWS, SDE1, S3 Glacier team. Onsite at Seattle HQ, August 2026. Four rounds. Rejected.
+<table class="facts">
+    <tbody>
+        <tr><th scope="row">Company</th><td>Amazon (AWS)</td></tr>
+        <tr><th scope="row">Team</th><td>S3 Glacier</td></tr>
+        <tr><th scope="row">Role</th><td>SDE1</td></tr>
+        <tr><th scope="row">Location</th><td>Seattle HQ, onsite</td></tr>
+        <tr><th scope="row">Date</th><td>August 2026</td></tr>
+        <tr><th scope="row">Rounds</th><td>4</td></tr>
+        <tr><th scope="row">Outcome</th><td>Rejected. No feedback, no call.</td></tr>
+    </tbody>
+</table>
 
 That was my fifth rejection from Amazon or AWS in three years.
 

@@ -147,6 +147,12 @@ p {
     display: none;
 }
 
+/* The separator belongs to the count, so it disappears with it. */
+.views:not([hidden])::before {
+    content: '·';
+    margin: 0 0.4em 0 0.25em;
+}
+
 /* Links ------------------------------------------------------------------ */
 
 a {
@@ -414,6 +420,18 @@ td:last-child, th:last-child {
     padding-right: 0;
 }
 
+/* Key/value spec table. Row labels reuse the muted uppercase th styling, so a
+   facts block reads as metadata rather than as data to compare. */
+.facts th {
+    width: 108px;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.facts td {
+    padding-right: 0;
+}
+
 /* The index/hub layout: a narrow tag column beside a wide content column. */
 .index-table td:first-child {
     width: 90px;
@@ -535,6 +553,17 @@ footer a:hover { color: var(--accent); }
         display: block;
         overflow-x: auto;
         white-space: nowrap;
+    }
+
+    /* Except the facts block, whose values must wrap rather than scroll. */
+    .prose table.facts {
+        display: table;
+        overflow: visible;
+        white-space: normal;
+    }
+
+    .facts th {
+        width: 92px;
     }
 
     blockquote {

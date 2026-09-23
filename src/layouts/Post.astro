@@ -44,8 +44,10 @@ const minutes = Math.max(1, Math.round(words / 220));
             <time datetime={date.toISOString()}>{formatDate(date)}</time>
             {updated && <> &middot; updated {formatDate(updated)}</>}
             {words > 0 && <> &middot; {minutes} min read</>}
-            {/* Filled in by PostStats once the counter API responds. */}
-            {likes && <> &middot; <span class="views" data-views hidden></span></>}
+            {/* Filled in by PostStats once the counter API responds. The
+                separator is a CSS ::before on the span, so a hidden or
+                not-yet-loaded count leaves no dangling middot. */}
+            {likes && <span class="views" data-views hidden />}
         </p>
 
         <div class="prose">
