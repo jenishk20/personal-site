@@ -474,6 +474,63 @@ td:last-child, th:last-child {
     margin: 0 0 0.5em;
 }
 
+/* An authored animated cue beside the prompt: a beating heart with two small
+   ones drifting up. Hand-written SVG rather than a GIF, so it costs about a
+   kilobyte instead of a few hundred, needs no request, and takes its colour
+   from the theme. */
+.like-cue {
+    width: 26px;
+    height: 28px;
+    vertical-align: -0.4em;
+    margin-right: 0.15em;
+    overflow: visible;
+}
+
+.cue-heart,
+.cue-spark {
+    fill: var(--accent);
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.cue-heart {
+    animation: cue-beat 2s ease-in-out infinite;
+}
+
+.cue-spark {
+    opacity: 0;
+    animation: cue-float 2s ease-out infinite;
+}
+
+.cue-spark-2 {
+    animation-delay: 1s;
+}
+
+@keyframes cue-beat {
+    0%, 55%, 100% { transform: scale(1); }
+    12% { transform: scale(1.16); }
+    24% { transform: scale(1); }
+    36% { transform: scale(1.09); }
+}
+
+@keyframes cue-float {
+    0% { opacity: 0; transform: translateY(2px) scale(0.6); }
+    25% { opacity: 0.85; }
+    100% { opacity: 0; transform: translateY(-9px) scale(0.95); }
+}
+
+/* Motion is decoration here, so honour the preference to switch it off. */
+@media (prefers-reduced-motion: reduce) {
+    .cue-heart,
+    .cue-spark {
+        animation: none;
+    }
+
+    .cue-spark {
+        opacity: 0;
+    }
+}
+
 .like {
     display: inline-flex;
     align-items: center;
