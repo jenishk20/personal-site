@@ -495,6 +495,29 @@ td:last-child, th:last-child {
     margin: 0 0 0.5em;
 }
 
+/* The emoji sits on the text baseline and a touch larger than the prompt, so
+   it reads as part of the sentence rather than as an icon beside it. */
+.cue-emoji {
+    font-size: 17px;
+    line-height: 1;
+    margin-right: 0.15em;
+    vertical-align: -0.1em;
+}
+
+/* Like button ------------------------------------------------------------ */
+
+.post-stats {
+    margin-top: 2.5em;
+}
+
+.post-stats[hidden] {
+    display: none;
+}
+
+.post-stats p {
+    margin: 0 0 0.5em;
+}
+
 /* An authored animated cue beside the prompt: a beating heart with two small
    ones drifting up. Hand-written SVG rather than a GIF, so it costs about a
    kilobyte instead of a few hundred, needs no request, and takes its colour
