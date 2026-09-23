@@ -602,8 +602,14 @@ footer a:hover { color: var(--accent); }
         padding: 0;
     }
 
-    .rounds td::before {
-        content: attr(data-label);
+    /* Labels come from the column position rather than a data-label on every
+       cell, so the table markup stays easy to hand-edit. Order-dependent: if
+       you add or reorder columns, update these. */
+    .rounds td:nth-child(2)::before { content: 'First 15 min'; }
+    .rounds td:nth-child(3)::before { content: 'Next 45 min'; }
+    .rounds td:nth-child(4)::before { content: 'Verdict'; }
+
+    .rounds td:nth-child(n + 2)::before {
         display: block;
         font-size: 10px;
         text-transform: uppercase;

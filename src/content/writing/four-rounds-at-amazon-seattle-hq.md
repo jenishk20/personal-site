@@ -14,7 +14,7 @@ draft: false
         <tr><th scope="row">Location</th><td>Seattle HQ, onsite</td></tr>
         <tr><th scope="row">Date</th><td>August 2026</td></tr>
         <tr><th scope="row">Rounds</th><td>4</td></tr>
-        <tr><th scope="row">Outcome</th><td>Rejected. No feedback, no call.</td></tr>
+        <tr><th scope="row">Outcome</th><td>Rejected. No feedback.</td></tr>
     </tbody>
 </table>
 
@@ -22,38 +22,18 @@ That was my fifth rejection from Amazon or AWS in three years.
 
 ## The loop
 
-Four rounds, each an hour, each split the same way: behavioural first, then code.
+Four rounds, each an hour, each split the same way: behavioural first, then code. The last column is my guess at what the interviewer wrote in the debrief, on the scale they actually use, not how I felt about it.
 
 <table class="rounds">
-    <thead>
-        <tr>
-            <th>Round</th>
-            <th>First 15 minutes</th>
-            <th>Next 45 minutes</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td data-label="Round">1 · Bar Raiser</td>
-            <td data-label="First 15 minutes">Leadership Principles, the full hour</td>
-            <td data-label="Next 45 minutes">No coding</td>
-        </tr>
-        <tr>
-            <td data-label="Round">2</td>
-            <td data-label="First 15 minutes">GenAI experience, and how I use AI tools day to day</td>
-            <td data-label="Next 45 minutes">Sliding-window substring</td>
-        </tr>
-        <tr>
-            <td data-label="Round">3</td>
-            <td data-label="First 15 minutes">LP: ownership</td>
-            <td data-label="Next 45 minutes">Parenthesis matching, stacks</td>
-        </tr>
-        <tr>
-            <td data-label="Round">4</td>
-            <td data-label="First 15 minutes">LP: ownership</td>
-            <td data-label="Next 45 minutes">Rate limiter, low-level design in C++</td>
-        </tr>
-    </tbody>
+<thead>
+<tr><th>Round</th><th>First 15 min</th><th>Next 45 min</th><th>Verdict</th></tr>
+</thead>
+<tbody>
+<tr><td>1 · Bar Raiser</td><td>Leadership Principles, the full hour</td><td>No coding</td><td>?</td></tr>
+<tr><td>2</td><td>GenAI experience, and how I use AI tools day to day</td><td>Sliding-window substring</td><td>?</td></tr>
+<tr><td>3</td><td>LP: ownership</td><td>Parenthesis matching, stacks</td><td>?</td></tr>
+<tr><td>4</td><td>LP: ownership</td><td>Rate limiter, low-level design in C++</td><td>?</td></tr>
+</tbody>
 </table>
 
 On both coding rounds I gave brute force, then a better approach, then the optimal one.
