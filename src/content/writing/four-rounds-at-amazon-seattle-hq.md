@@ -22,15 +22,43 @@ That was my fifth rejection from Amazon or AWS in three years.
 
 ## The loop
 
-**Round 1: Bar Raiser.** Entirely Leadership Principles. No code.
+Four rounds, each an hour, each split the same way: behavioural first, then code.
 
-**Round 2: 15 minutes on GenAI, 45 on code.** The first stretch was about my experience with generative AI and how I use AI tools day to day, which I hadn't expected in an SDE1 loop and which was the most interesting conversation of the day. Then a sliding-window substring problem. I gave brute force, then a better approach, then the optimal one.
+<table class="rounds">
+    <thead>
+        <tr>
+            <th>Round</th>
+            <th>First 15 minutes</th>
+            <th>Next 45 minutes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-label="Round">1 · Bar Raiser</td>
+            <td data-label="First 15 minutes">Leadership Principles, the full hour</td>
+            <td data-label="Next 45 minutes">No coding</td>
+        </tr>
+        <tr>
+            <td data-label="Round">2</td>
+            <td data-label="First 15 minutes">GenAI experience, and how I use AI tools day to day</td>
+            <td data-label="Next 45 minutes">Sliding-window substring</td>
+        </tr>
+        <tr>
+            <td data-label="Round">3</td>
+            <td data-label="First 15 minutes">LP: ownership</td>
+            <td data-label="Next 45 minutes">Parenthesis matching, stacks</td>
+        </tr>
+        <tr>
+            <td data-label="Round">4</td>
+            <td data-label="First 15 minutes">LP: ownership</td>
+            <td data-label="Next 45 minutes">Rate limiter, low-level design in C++</td>
+        </tr>
+    </tbody>
+</table>
 
-**Round 3: LP on ownership, then stacks.** A parenthesis-matching problem. I walked the same path: brute force, better, optimal.
+On both coding rounds I gave brute force, then a better approach, then the optimal one.
 
-This was the round that went wrong, and not because of the problem. The interviewer was unresponsive to the point where I could not tell whether anything I said had landed. I explained the approach three ways. I got almost nothing back. You cannot course-correct against silence, and by the end I had no idea whether I was being evaluated or just waited out.
-
-**Round 4: LP on ownership, then low-level design.** Design a rate limiter. I did the OOP design in C++.
+Round 3 is the one that went wrong, and not because of the problem. The interviewer was unresponsive to the point where I could not tell whether anything I said had landed. I explained the approach three ways. I got almost nothing back. You cannot course-correct against silence, and by the end I had no idea whether I was being evaluated or just waited out.
 
 ## Then nothing
 

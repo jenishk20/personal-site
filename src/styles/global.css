@@ -420,6 +420,18 @@ td:last-child, th:last-child {
     padding-right: 0;
 }
 
+/* A multi-column content table inside a post. On mobile each row becomes a
+   labelled block: the header row is hidden and every cell prints its own label
+   from data-label, so three columns of sentences stay readable at 375px
+   instead of scrolling sideways. */
+.rounds td {
+    vertical-align: top;
+}
+
+.rounds td:first-child {
+    white-space: nowrap;
+}
+
 /* Key/value spec table. Row labels reuse the muted uppercase th styling, so a
    facts block reads as metadata rather than as data to compare. */
 .facts th {
@@ -560,6 +572,53 @@ footer a:hover { color: var(--accent); }
         display: table;
         overflow: visible;
         white-space: normal;
+    }
+
+    /* The rounds table stacks into labelled blocks rather than scrolling. */
+    .prose table.rounds {
+        display: block;
+        overflow: visible;
+        white-space: normal;
+    }
+
+    .rounds thead {
+        display: none;
+    }
+
+    .rounds tbody,
+    .rounds tr,
+    .rounds td {
+        display: block;
+        width: 100%;
+    }
+
+    .rounds tr {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .rounds td {
+        border-bottom: none;
+        padding: 0;
+    }
+
+    .rounds td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        margin-top: 0.5em;
+    }
+
+    .rounds td:first-child {
+        font-weight: 600;
+        white-space: normal;
+    }
+
+    .rounds td:first-child::before {
+        display: none;
     }
 
     .facts th {
