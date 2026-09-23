@@ -460,6 +460,39 @@ td:last-child, th:last-child {
     white-space: nowrap;
 }
 
+/* A typographic closing device: one "fail" per rejection, then the turn. Text
+   rather than an image, so it is selectable, searchable, themed, and free. The
+   accumulating weight is carried by opacity rather than by size. */
+.fail-run {
+    margin: 2.5em 0 0;
+    padding-top: 1.25em;
+    border-top: 1px solid var(--border);
+    font-size: 15px;
+    letter-spacing: -0.2px;
+}
+
+.fail-run span {
+    color: var(--text-muted);
+}
+
+.fail-run span + span::before {
+    content: '·';
+    margin: 0 0.5em;
+    opacity: 0.5;
+}
+
+.fail-run span:nth-child(1) { opacity: 0.45; }
+.fail-run span:nth-child(2) { opacity: 0.55; }
+.fail-run span:nth-child(3) { opacity: 0.68; }
+.fail-run span:nth-child(4) { opacity: 0.82; }
+.fail-run span:nth-child(5) { opacity: 1; }
+
+.fail-run .again {
+    color: var(--accent);
+    font-weight: 600;
+    opacity: 1;
+}
+
 /* Like button ------------------------------------------------------------ */
 
 .post-stats {

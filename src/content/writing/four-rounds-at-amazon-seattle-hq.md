@@ -55,3 +55,7 @@ Five rejections from one company over three years is either a strong signal abou
 ## What I would do differently
 
 I gave my best shot and could not have done better. I will not change anything about my preparation. I will continue to solve more problems and hope for luck to favor someday.
+
+<p class="fail-run" role="img" aria-label="fail, fail, fail, fail, fail, try again">
+<span>fail</span><span>fail</span><span>fail</span><span>fail</span><span>fail</span><span class="again">try again</span>
+</p>
