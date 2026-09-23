@@ -1,0 +1,184 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import {
+    interviews,
+    STAGES,
+    STAGE_LABELS,
+    SOURCE_LABELS,
+    type Interview,
+    type Stage,
+} from '../data/interviews';
+
+/**
+ * The interview log. Full-time and internship loops are kept apart because
+ * their conversion rates are not comparable, and showing one blended number
+ * would hide the only interesting comparison on the page.
+ *
+ * Every statistic is derived from src/data/interviews.ts. Nothing here is
+ * typed by hand, so the prose cannot drift from the table.
+ */
+
+// Only link a write-up that is actually published, so a draft never leaves a
+// 404 on this page. Self-heals when draft: false.
+const published = new Set(
+    (await getCollection('writing'))
+        .filter((e) => import.meta.env.DEV || !e.data.draft)
+        .map((e) => e.id),
+);
+
+const byDate = (a: Interview, b: Interview) => b.when.localeCompare(a.when);
+
+function summarise(rows: Interview[]) {
+    const offers = rows.filter((r) => r.outcome === 'offer').length;
+    const ghosted = rows.filter((r) => r.ghosted).length;
+
+    // Where loops ended, deepest stage first.
+    const died = STAGES.map((s) => ({
+        stage: s,
+        n: rows.filter((r) => r.outcome !== 'offer' && r.reached === s).length,
+    })).filter((d) => d.n > 0);
+
+    // Conversion by source, over the rows where the source is recorded.
+    const known = rows.filter((r) => r.source);
+    const bySource = Object.entries(
+        known.reduce<Record<string, { n: number; offers: number }>>((acc, r) => {
+            const k = r.source!;
+            acc[k] ??= { n: 0, offers: 0 };
+            acc[k].n += 1;
+            if (r.outcome === 'offer') acc[k].offers += 1;
+            return acc;
+        }, {}),
+    ).sort((a, b) => b[1].n - a[1].n);
+
+    return {
+        n: rows.length,
+        offers,
+        ghosted,
+        died,
+        bySource,
+        sourceUnknown: rows.length - known.length,
+        rate: rows.length ? Math.round((offers / rows.length) * 100) : 0,
+    };
+}
+
+const groups = [
+    { key: 'full-time', heading: 'Full-time', rows: interviews.filter((i) => i.type === 'full-time').sort(byDate) },
+    { key: 'internship', heading: 'Internships', rows: interviews.filter((i) => i.type === 'internship').sort(byDate) },
+].filter((g) => g.rows.length > 0);
+
+const all = summarise(interviews);
+
+const monthName = (when: string) => {
+    const [y, m] = when.split('-');
+    return `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(m) - 1]} ${y}`;
+};
+
+const outcomeLabel: Record<Interview['outcome'], string> = {
+    offer: 'Offer',
+    rejected: 'Rejected',
+    withdrew: 'Withdrew',
+    'no-response': 'No response',
+};
+---
+
+<Base
+    title="Interviews"
+    description="Every interview I have done in the US: full-time and internship loops, how far each got, and what I took from them."
+>
+    <article>
+        <h1>Interviews</h1>
+
+        <p class="lede">
+            Every loop I have done in the US, what stage it reached, and how it
+            ended. {all.n} {all.n === 1 ? 'loop' : 'loops'}, {all.offers}
+            {all.offers === 1 ? 'offer' : 'offers'}{
+                all.ghosted > 0 && (
+                    <>, and {all.ghosted} where nobody ever closed the loop</>
+                )
+            }. The numbers on this page are counted from the table, not written
+            separately.
+        </p>
+
+        {
+            groups.map((g) => {
+                const s = summarise(g.rows);
+                return (
+                    <>
+                        <h2>{g.heading}</h2>
+
+                        <p>
+                            {s.n} {s.n === 1 ? 'loop' : 'loops'} &middot; {s.offers}{' '}
+                            {s.offers === 1 ? 'offer' : 'offers'}
+                            {s.n > 1 && <> &middot; {s.rate}% offer rate</>}
+                            {s.ghosted > 0 && <> &middot; {s.ghosted} ghosted</>}
+                        </p>
+
+                        {s.died.length > 0 && (
+                            <p class="lede" style="font-size:13px">
+                                Ended at:{' '}
+                                {s.died
+                                    .map((d) => `${STAGE_LABELS[d.stage as Stage].toLowerCase()} (${d.n})`)
+                                    .join(', ')}
+                                .
+                            </p>
+                        )}
+
+                        {s.bySource.length > 0 && (
+                            <p class="lede" style="font-size:13px">
+                                By source:{' '}
+                                {s.bySource
+                                    .map(
+                                        ([k, v]) =>
+                                            `${SOURCE_LABELS[k as keyof typeof SOURCE_LABELS]} ${v.offers}/${v.n}`,
+                                    )
+                                    .join(' · ')}
+                                {s.sourceUnknown > 0 && ` · ${s.sourceUnknown} unrecorded`}.
+                            </p>
+                        )}
+
+                        <table class="index-table">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Role</th>
+                                    <th>When</th>
+                                    <th>Reached</th>
+                                    <th>Outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {g.rows.map((r) => (
+                                    <tr>
+                                        <td>{r.company}</td>
+                                        <td>
+                                            {r.role}
+                                            {r.team && <span class="date"> · {r.team}</span>}
+                                        </td>
+                                        <td class="date">{monthName(r.when)}</td>
+                                        <td>{STAGE_LABELS[r.reached]}</td>
+                                        <td>
+                                            {outcomeLabel[r.outcome]}
+                                            {r.ghosted && <span class="date"> · ghosted</span>}
+                                            {r.takeaway && (
+                                                <div class="lede" style="font-size:13px">
+                                                    {r.takeaway}
+                                                    {r.writeup && published.has(r.writeup) && (
+                                                        <>
+                                                            {' '}
+                                                            <a href={`/${r.writeup}/`}>Write-up</a>.
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </>
+                );
+            })
+        }
+    </article>
+</Base>
