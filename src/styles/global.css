@@ -462,11 +462,23 @@ td:last-child, th:last-child {
 
 /* Like button ------------------------------------------------------------ */
 
+.post-stats {
+    margin-top: 2.5em;
+}
+
+.post-stats[hidden] {
+    display: none;
+}
+
+.post-stats p {
+    margin: 0 0 0.5em;
+}
+
 .like {
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
-    margin: 2.5em 0 0;
+    margin: 0;
     padding: 0.4em 0.75em;
     font: inherit;
     font-size: 13px;

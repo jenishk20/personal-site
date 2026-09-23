@@ -18,7 +18,7 @@ draft: false
     </tbody>
 </table>
 
-That was my fifth rejection from Amazon or AWS in three years.
+That was my fifth rejection from Amazon or AWS in three years at interview stages.
 
 ## The loop
 
@@ -26,13 +26,13 @@ Four rounds, each an hour, each split the same way: behavioural first, then code
 
 <table class="rounds">
 <thead>
-<tr><th>Round</th><th>First 15 min</th><th>Next 45 min</th><th>Verdict</th></tr>
+<tr><th>Round</th><th>First 15 min</th><th>Next 45 min</th><th>Self Rating</th></tr>
 </thead>
 <tbody>
-<tr><td>1 · Bar Raiser</td><td>Leadership Principles, the full hour</td><td>No coding</td><td>?</td></tr>
-<tr><td>2</td><td>GenAI experience, and how I use AI tools day to day</td><td>Sliding-window substring</td><td>?</td></tr>
-<tr><td>3</td><td>LP: ownership</td><td>Parenthesis matching, stacks</td><td>?</td></tr>
-<tr><td>4</td><td>LP: ownership</td><td>Rate limiter, low-level design in C++</td><td>?</td></tr>
+<tr><td>1 · Bar Raiser</td><td>Leadership Principles, the full hour</td><td>No coding</td><td>Strong Hire / Hire</td></tr>
+<tr><td>2 · Technical Coding</td><td>GenAI experience, and how I use AI tools day to day</td><td>Sliding-window substring problem</td><td>Hire</td></tr>
+<tr><td>3 · Technical Coding</td><td>Leadership Principles</td><td>Parenthesis matching, stacks</td><td>Lean Hire</td></tr>
+<tr><td>4 · LLD</td><td>Leadership Principles</td><td>Rate limiter, low-level design in C++</td><td>Hire</td></tr>
 </tbody>
 </table>
 
@@ -44,23 +44,14 @@ Round 3 is the one that went wrong, and not because of the problem. The intervie
 
 No feedback. No call. The recruiter simply stopped responding.
 
-I flew to Seattle, spent a day in four interviews, and found out I had been rejected by inference.
+<b><i>Candidates are told to be thorough and to have high standards, and then the process does not hold itself to the standard it interviews for.</i></b>
 
-That is the part I would push back on hardest, and it is the part that has nothing to do with whether I was good enough. Amazon asked me to travel to their headquarters. The cost of closing that loop was one email. Candidates are told to be thorough and to have high standards, and then the process does not hold itself to the standard it interviews for.
+## What I actually think, after 5 rejections
 
-## What I actually think, after five
-
-The honest version is narrower than the version I say out loud to friends.
-
-After five of these I had convinced myself the process mostly rewards people who have seen the question before. I should be careful with that, because my own loop was in person at HQ, where the usual shortcut does not apply. Whatever happened in my rounds, it was not that.
-
-So here is the claim I can actually defend: **the loop did not measure very much.** Two coding rounds where I produced brute force, better, and optimal, and one of them still ended with an interviewer who could not follow the explanation. That is not a signal about my ability and it is not really a signal about theirs. It says the instrument is noisy. A process that noisy will reject people it should hire and hire people it should reject, and it will do both while feeling rigorous to everyone inside it.
+**The loop did not measure very much.** Two coding rounds where I produced brute force, better, and optimal, and one of them still ended with an interviewer who could not follow the explanation. That is not a signal about my ability and it is not really a signal about theirs.
 
 Five rejections from one company over three years is either a strong signal about me or a weak signal repeated five times. I genuinely do not know which, and I think anyone who tells you they know which for their own case is guessing.
 
 ## What I would do differently
 
-Not much about the preparation, which is an uncomfortable thing to conclude. The problems were standard and I solved them standard ways.
-
-What I would change is how I handle a dead room. I treated Round 3's silence as something to push through by explaining more. Explaining more into silence just fills the time. The better move is to ask directly: *is this the direction you want, or should I go somewhere else with it?* Make the interviewer say something. If they still say nothing, at least you know early rather than at minute forty.
-
+I gave my best shot and could not have done better. I will not change anything about my preparation. I will continue to solve more problems and hope for luck to favor someday.

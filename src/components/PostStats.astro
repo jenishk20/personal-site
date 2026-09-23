@@ -8,8 +8,9 @@
  * Post.astro puts in the meta line; the like button lives here at the foot of
  * the article.
  *
- * Progressive enhancement throughout: the button ships hidden and disabled, and
- * the views span ships empty. If the API is unreachable — no KV binding, or
+ * Progressive enhancement throughout: the prompt and button ship hidden inside
+ * one wrapper, so the prompt can never appear without a working button, and the
+ * views span ships empty. If the API is unreachable — no KV binding, or
  * `astro dev` with no Cloudflare runtime — neither ever appears, so a missing
  * binding degrades to the plain static page rather than a broken control.
  */
@@ -20,15 +21,19 @@ interface Props {
 const { slug } = Astro.props;
 ---
 
-<button class="like" data-like-button data-slug={slug} disabled hidden>
-    <span class="like-heart" aria-hidden="true">&#9825;</span>
-    <span class="like-label">Like</span>
-    <span class="like-count"></span>
-</button>
+<div class="post-stats" data-stats hidden>
+    <p class="lede">Found this useful?</p>
+    <button class="like" data-like-button data-slug={slug} disabled>
+        <span class="like-heart" aria-hidden="true">&#9825;</span>
+        <span class="like-label">Like</span>
+        <span class="like-count"></span>
+    </button>
+</div>
 
 <script>
     const button = document.querySelector<HTMLButtonElement>('[data-like-button]');
     const viewsEl = document.querySelector<HTMLElement>('[data-views]');
+    const wrap = document.querySelector<HTMLElement>('[data-stats]');
 
     if (button) {
         const slug = button.dataset.slug!;
@@ -70,7 +75,7 @@ const { slug } = Astro.props;
 
             renderViews(views ?? 0);
 
-            button.hidden = false;
+            if (wrap) wrap.hidden = false;
             button.disabled = false;
             renderLikes(likes ?? 0);
 
