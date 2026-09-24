@@ -272,7 +272,19 @@ img[width='40'], img[width='50'], img[width='60'], img[width='80'] {
     margin: 0;
 }
 
+/* Each photo links to its own file, so a click opens it at full size in the
+   browser's own viewer: native pinch-zoom on mobile, and no JavaScript. */
+.photo-row a {
+    display: block;
+    line-height: 0;
+}
+
+.photo-row a:hover img {
+    opacity: 0.88;
+}
+
 .photo-row img {
+    transition: opacity 0.15s;
     display: block;
     width: 100%;
     height: auto;
