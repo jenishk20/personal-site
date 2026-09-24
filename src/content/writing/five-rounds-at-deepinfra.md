@@ -63,3 +63,8 @@ I was told why. That sounds like a low bar and it is, but it is one that a great
 I am still in touch with most of the people who interviewed me, including the founding team and the recruiter. That is the part that matters more than the outcome. A loop that ends with a rejection and five new professional relationships is not a loop I regret spending a month on.
 
 I flew out for this one too. Compare it with <a href="/four-rounds-at-amazon-seattle-hq/">flying to Seattle for four rounds</a> and learning I had been rejected by inference. Two companies, the same amount of my time and travel, the same answer at the end. One of them told me why.
+
+<figure class="poster">
+<img src="/images/fail-better.webp" alt="A framed print reading: Ever tried. Ever failed. No matter. Try again. Fail again. Fail better." width="250" height="292" loading="lazy" style="max-width:250px" />
+<figcaption>Samuel Beckett, <em>Worstward Ho</em> (1983).</figcaption>
+</figure>
