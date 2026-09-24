@@ -80,6 +80,21 @@ export const interviews: Interview[] = [
             'Flew to Seattle HQ for four rounds. The recruiter stopped replying; I found out by inference.',
     },
 
+    {
+        company: 'DeepInfra',
+        role: 'SWE, experienced',
+        team: 'Inference',
+        type: 'full-time',
+        when: '2026-04',
+        source: 'cold-apply',
+        reached: 'onsite',
+        rounds: 5,
+        outcome: 'rejected',
+        writeup: 'five-rounds-at-deepinfra',
+        takeaway:
+            'Lost it on a hard tile-placement problem with a cofounder. Told the reason was seniority; still in touch with the team.',
+    },
+
     // Add the rest here. Template:
     //
     // {
