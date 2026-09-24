@@ -27,14 +27,14 @@ The first three rounds were remote. The last two were onsite in Palo Alto.
 
 <table class="rounds">
 <thead>
-<tr><th>Round</th><th>What it was</th><th>Problem</th><th>Self-verdict</th></tr>
+<tr><th>Round</th><th>What it was</th><th>Problem</th><th>Self Rating</th></tr>
 </thead>
 <tbody>
-<tr><td data-label="Round">1</td><td data-label="What it was">Intro call with the recruiter</td><td data-label="Problem">The role and the team</td><td data-label="Self-verdict"></td></tr>
-<tr><td data-label="Round">2</td><td data-label="What it was">Problem solving</td><td data-label="Problem">Graph, cycle detection. Medium to hard</td><td data-label="Self-verdict">Hire</td></tr>
-<tr><td data-label="Round">3</td><td data-label="What it was">Problem solving</td><td data-label="Problem">Matrix, combinatorics and graph. Medium to hard</td><td data-label="Self-verdict">Hire</td></tr>
-<tr><td data-label="Round">4</td><td data-label="What it was">Fit, with the recruiting lead</td><td data-label="Problem">Experience and background</td><td data-label="Self-verdict">Hire</td></tr>
-<tr><td data-label="Round">5</td><td data-label="What it was">Problem solving, with a cofounder</td><td data-label="Problem">Place tiles on a plane. Hard. Plus questions on AI inference</td><td data-label="Self-verdict">Lean Hire</td></tr>
+<tr><td data-label="Round">1</td><td data-label="What it was">Intro call with the recruiter</td><td data-label="Problem">The role and the team</td><td data-label="Self Rating"></td></tr>
+<tr><td data-label="Round">2</td><td data-label="What it was">Problem solving</td><td data-label="Problem">Graph, cycle detection. Medium to hard</td><td data-label="Self Rating">Hire</td></tr>
+<tr><td data-label="Round">3</td><td data-label="What it was">Problem solving</td><td data-label="Problem">Matrix, combinatorics and graph. Medium to hard</td><td data-label="Self Rating">Hire</td></tr>
+<tr><td data-label="Round">4</td><td data-label="What it was">Fit, with the recruiting lead</td><td data-label="Problem">Experience and background</td><td data-label="Self Rating">Hire</td></tr>
+<tr><td data-label="Round">5</td><td data-label="What it was">Problem solving, with a cofounder</td><td data-label="Problem">Place tiles on a plane. Hard. Plus questions on AI inference</td><td data-label="Self Rating">Lean Hire</td></tr>
 </tbody>
 </table>
 
