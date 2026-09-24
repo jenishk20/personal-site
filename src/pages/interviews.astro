@@ -83,15 +83,14 @@ const outcomeLabel: Record<Interview['outcome'], string> = {
 ---
 
 <Base
-    title="Interviews"
+    title="Interviews in the US"
     description="Every interview I have done in the US: full-time and internship loops, how far each got, and what I took from them."
 >
     <article>
-        <h1>Interviews</h1>
+        <h1>Interviews in the US</h1>
 
         <p class="lede">
-            Every loop I have done in the US, what stage it reached, and how it
-            ended. {all.n} {all.n === 1 ? 'loop' : 'loops'}, {all.offers}
+            Every loop, what stage it reached, and how it ended. {all.n} {all.n === 1 ? 'loop' : 'loops'}, {all.offers}
             {all.offers === 1 ? 'offer' : 'offers'}{
                 all.ghosted > 0 && (
                     <>, and {all.ghosted} where nobody ever closed the loop</>

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { interviews } from '../data/interviews';
 import '@fontsource-variable/inter';
 import '../styles/global.css';
 import { SITE, NAV, SOCIALS } from '../consts';
@@ -35,7 +36,11 @@ const currentPath = Astro.url.pathname;
 const hasWriting = (await getCollection('writing')).some(
     (e) => import.meta.env.DEV || !e.data.draft,
 );
-const nav = NAV.filter((item) => item.href !== '/writing/' || hasWriting);
+const nav = NAV.filter(
+    (item) =>
+        (item.href !== '/writing/' || hasWriting) &&
+        (item.href !== '/interviews/' || interviews.length > 0),
+);
 
 const personSchema = {
     '@context': 'https://schema.org',
