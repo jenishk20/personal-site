@@ -48,7 +48,7 @@ It is tempting to file this under bad luck, a problem arriving from an angle I h
 
 ## What they actually said
 
-The stated reason was that they were looking for someone with more experience.
+The stated reason was that they were looking for someone with more experience for this role.
 
 ## What made this good anyway
 
