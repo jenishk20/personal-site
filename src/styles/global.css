@@ -718,11 +718,10 @@ footer a:hover { color: var(--accent); }
     /* Labels come from the column position rather than a data-label on every
        cell, so the table markup stays easy to hand-edit. Order-dependent: if
        you add or reorder columns, update these. */
-    .rounds td:nth-child(2)::before { content: 'First 15 min'; }
-    .rounds td:nth-child(3)::before { content: 'Next 45 min'; }
-    .rounds td:nth-child(4)::before { content: 'Verdict'; }
-
+    /* Each cell carries its own label, so two tables with different columns
+       cannot end up showing each other's headings on mobile. */
     .rounds td:nth-child(n + 2)::before {
+        content: attr(data-label);
         display: block;
         font-size: 10px;
         text-transform: uppercase;
@@ -736,7 +735,8 @@ footer a:hover { color: var(--accent); }
         white-space: normal;
     }
 
-    .rounds td:first-child::before {
+    .rounds td:first-child::before,
+    .rounds td:empty::before {
         display: none;
     }
 

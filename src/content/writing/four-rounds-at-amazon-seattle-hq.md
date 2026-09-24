@@ -30,10 +30,10 @@ Four rounds, each an hour, each split the same way: behavioural first, then code
 <tr><th>Round</th><th>First 15 min</th><th>Next 45 min</th><th>Self Rating</th></tr>
 </thead>
 <tbody>
-<tr><td>1 · Bar Raiser</td><td>Leadership Principles, the full hour</td><td>No coding</td><td>Strong Hire / Hire</td></tr>
-<tr><td>2 · Technical Coding</td><td>GenAI experience, and how I use AI tools day to day</td><td>Sliding-window substring problem</td><td>Hire</td></tr>
-<tr><td>3 · Technical Coding</td><td>Leadership Principles</td><td>Parenthesis matching, stacks</td><td>Lean Hire</td></tr>
-<tr><td>4 · LLD</td><td>Leadership Principles</td><td>Rate limiter, low-level design in C++</td><td>Hire</td></tr>
+<tr><td data-label="Round">1 · Bar Raiser</td><td data-label="First 15 min">Leadership Principles, the full hour</td><td data-label="Next 45 min">No coding</td><td data-label="Self Rating">Strong Hire / Hire</td></tr>
+<tr><td data-label="Round">2 · Technical Coding</td><td data-label="First 15 min">GenAI experience, and how I use AI tools day to day</td><td data-label="Next 45 min">Sliding-window substring problem</td><td data-label="Self Rating">Hire</td></tr>
+<tr><td data-label="Round">3 · Technical Coding</td><td data-label="First 15 min">Leadership Principles</td><td data-label="Next 45 min">Parenthesis matching, stacks</td><td data-label="Self Rating">Lean Hire</td></tr>
+<tr><td data-label="Round">4 · LLD</td><td data-label="First 15 min">Leadership Principles</td><td data-label="Next 45 min">Rate limiter, low-level design in C++</td><td data-label="Self Rating">Hire</td></tr>
 </tbody>
 </table>
 

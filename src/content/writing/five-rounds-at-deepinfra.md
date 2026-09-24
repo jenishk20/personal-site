@@ -27,18 +27,16 @@ The first three rounds were remote. The last two were onsite in Palo Alto.
 
 <table class="rounds">
 <thead>
-<tr><th>Round</th><th>What it was</th><th>Problem</th><th>Verdict</th></tr>
+<tr><th>Round</th><th>What it was</th><th>Problem</th><th>Self-verdict</th></tr>
 </thead>
 <tbody>
-<tr><td>1</td><td>Intro call with the recruiter</td><td>The role and the team</td><td></td></tr>
-<tr><td>2</td><td>Problem solving</td><td>Graph, cycle detection. Medium to hard</td><td>Hire</td></tr>
-<tr><td>3</td><td>Problem solving</td><td>Matrix, combinatorics and graph. Medium to hard</td><td>Hire</td></tr>
-<tr><td>4</td><td>Fit, with the recruiting lead</td><td>Experience and background</td><td>Hire</td></tr>
-<tr><td>5</td><td>Problem solving, with a cofounder</td><td>Place tiles on a plane. Hard. Plus questions on AI inference</td><td>Lean Hire</td></tr>
+<tr><td data-label="Round">1</td><td data-label="What it was">Intro call with the recruiter</td><td data-label="Problem">The role and the team</td><td data-label="Self-verdict"></td></tr>
+<tr><td data-label="Round">2</td><td data-label="What it was">Problem solving</td><td data-label="Problem">Graph, cycle detection. Medium to hard</td><td data-label="Self-verdict">Hire</td></tr>
+<tr><td data-label="Round">3</td><td data-label="What it was">Problem solving</td><td data-label="Problem">Matrix, combinatorics and graph. Medium to hard</td><td data-label="Self-verdict">Hire</td></tr>
+<tr><td data-label="Round">4</td><td data-label="What it was">Fit, with the recruiting lead</td><td data-label="Problem">Experience and background</td><td data-label="Self-verdict">Hire</td></tr>
+<tr><td data-label="Round">5</td><td data-label="What it was">Problem solving, with a cofounder</td><td data-label="Problem">Place tiles on a plane. Hard. Plus questions on AI inference</td><td data-label="Self-verdict">Lean Hire</td></tr>
 </tbody>
 </table>
-
-The verdict column is my guess at what each interviewer wrote, on the scale the debrief actually uses.
 
 Worth knowing who was on the other side of the table: nearly everyone on that team is an ICPC or IOI medallist. That explains the shape of the problems. Cycle detection, combinatorics on a matrix, and placing tiles on a plane are not standard interview questions, they are olympiad questions, and they were being asked by people who had won at that level.
 
@@ -46,15 +44,11 @@ Worth knowing who was on the other side of the table: nearly everyone on that te
 
 At a company this size a cofounder's read carries more weight than anyone else's, and I did not solve the tile problem correctly. My communication was good throughout, which is not the same thing as arriving at the answer.
 
-It is tempting to file this under bad luck, a problem arriving from an angle I had not seen. Some of that is true. But writing it down next to who was asking, the more honest version is that the problem was pitched at a level the room had already cleared and I had not. Forty-five minutes is not long enough to close that gap, and it was not supposed to be.
+It is tempting to file this under bad luck, a problem arriving from an angle I had not seen. Some of that is true. But writing it down next to who was asking, the more honest version is that the problem was pitched at a level the room had already cleared and I had not.
 
 ## What they actually said
 
 The stated reason was that they were looking for someone with more experience.
-
-That is worth separating from my own read, because the two do not agree. I think I lost it on the tile problem. They said the bar was seniority. Both can be true, and it is possible the tile round is simply where a seniority gap becomes visible. But it is also possible I am assigning blame to the round I felt worst about, which is the most human thing a candidate does.
-
-I would rather record both than pretend I know which one decided it.
 
 ## What made this good anyway
 
