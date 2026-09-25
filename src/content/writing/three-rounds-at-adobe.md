@@ -57,7 +57,7 @@ The internship became a return offer, and the return offer was for **Software En
 
 Which means the entirety of my full-time interview experience at Adobe is the three rounds above, sat in November 2024, for an internship.
 
-That is also why there is no separate Adobe entry in my <a href="/interviews/">interview log</a> for the full-time job. One loop, two offers, and the second one skipped a level. Counting the conversion as a loop would put an offer on that page with no rounds behind it.
+That is also why there is no separate Adobe entry in my <a href="/interviews/">interview log</a> for the full-time job. One loop, two offers. Counting the conversion as a loop would put an offer on that page with no rounds behind it.
 
 ## If you are applying this cycle
 
