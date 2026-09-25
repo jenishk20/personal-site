@@ -493,6 +493,18 @@ td:last-child, th:last-child {
     margin-top: 0.5em;
 }
 
+/* A closing quote set as type rather than as a copy of someone else's graphic:
+   same plate treatment as .poster, but weightless, themed, and selectable. */
+.poster blockquote {
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.45;
+    letter-spacing: -0.2px;
+}
+
 /* Like button ------------------------------------------------------------ */
 
 .post-stats {
@@ -727,9 +739,6 @@ footer a:hover { color: var(--accent); }
         padding: 0;
     }
 
-    /* Labels come from the column position rather than a data-label on every
-       cell, so the table markup stays easy to hand-edit. Order-dependent: if
-       you add or reorder columns, update these. */
     /* Each cell carries its own label, so two tables with different columns
        cannot end up showing each other's headings on mobile. */
     .rounds td:nth-child(n + 2)::before {

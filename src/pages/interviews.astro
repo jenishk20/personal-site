@@ -27,7 +27,10 @@ const published = new Set(
         .map((e) => e.id),
 );
 
-const byDate = (a: Interview, b: Interview) => b.when.localeCompare(a.when);
+// Newest first. Rows with no recorded month sort to the bottom of their
+// group rather than to the top, which is where an empty string would put them.
+const byDate = (a: Interview, b: Interview) =>
+    (b.when ?? '').localeCompare(a.when ?? '');
 
 function summarise(rows: Interview[]) {
     const offers = rows.filter((r) => r.outcome === 'offer').length;
@@ -62,6 +65,30 @@ function summarise(rows: Interview[]) {
     };
 }
 
+/**
+ * These two render as a single text node each. Built here rather than inline in
+ * the markup because JSX collapses the line break before a lone closing full
+ * stop into a space, which printed "onsite (2) ." with a gap, and the `{' '}`
+ * after a label doubled up with the indentation whitespace.
+ */
+type Summary = ReturnType<typeof summarise>;
+
+const diedLine = (s: Summary) =>
+    `Ended at: ${s.died
+        .map((d) => `${STAGE_LABELS[d.stage as Stage].toLowerCase()} (${d.n})`)
+        .join(', ')}.`;
+
+const sourceLine = (s: Summary) => {
+    const known = s.bySource
+        .map(
+            ([k, v]) =>
+                `${SOURCE_LABELS[k as keyof typeof SOURCE_LABELS]} ${v.offers}/${v.n}`,
+        )
+        .join(' \u00b7 ');
+    const unknown = s.sourceUnknown > 0 ? ` \u00b7 ${s.sourceUnknown} unrecorded` : '';
+    return `By source: ${known}${unknown}.`;
+};
+
 const groups = [
     { key: 'full-time', heading: 'Full-time', rows: interviews.filter((i) => i.type === 'full-time').sort(byDate) },
     { key: 'internship', heading: 'Internships', rows: interviews.filter((i) => i.type === 'internship').sort(byDate) },
@@ -69,7 +96,8 @@ const groups = [
 
 const all = summarise(interviews);
 
-const monthName = (when: string) => {
+const monthName = (when?: string) => {
+    if (!when) return 'unrecorded';
     const [y, m] = when.split('-');
     return `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(m) - 1]} ${y}`;
 };
@@ -109,31 +137,16 @@ const outcomeLabel: Record<Interview['outcome'], string> = {
                         <p>
                             {s.n} {s.n === 1 ? 'loop' : 'loops'} &middot; {s.offers}{' '}
                             {s.offers === 1 ? 'offer' : 'offers'}
-                            {s.n > 1 && <> &middot; {s.rate}% offer rate</>}
+                            {s.n > 1 && s.offers > 0 && <> &middot; {s.rate}% offer rate</>}
                             {s.ghosted > 0 && <> &middot; {s.ghosted} ghosted</>}
                         </p>
 
                         {s.died.length > 0 && (
-                            <p class="lede" style="font-size:13px">
-                                Ended at:{' '}
-                                {s.died
-                                    .map((d) => `${STAGE_LABELS[d.stage as Stage].toLowerCase()} (${d.n})`)
-                                    .join(', ')}
-                                .
-                            </p>
+                            <p class="lede" style="font-size:13px">{diedLine(s)}</p>
                         )}
 
                         {s.bySource.length > 0 && (
-                            <p class="lede" style="font-size:13px">
-                                By source:{' '}
-                                {s.bySource
-                                    .map(
-                                        ([k, v]) =>
-                                            `${SOURCE_LABELS[k as keyof typeof SOURCE_LABELS]} ${v.offers}/${v.n}`,
-                                    )
-                                    .join(' · ')}
-                                {s.sourceUnknown > 0 && ` · ${s.sourceUnknown} unrecorded`}.
-                            </p>
+                            <p class="lede" style="font-size:13px">{sourceLine(s)}</p>
                         )}
 
                         <table class="index-table">
