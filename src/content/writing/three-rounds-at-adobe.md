@@ -55,8 +55,6 @@ The shortest loop I have sat produced the only offer that turned into a career. 
 
 The internship became a return offer, and the return offer was for **Software Engineer II** rather than the new grad level. Same product and the same team, Workfront Reviews and Approvals, which is where I still am. No second loop: no full-time application, no repeat of the algorithm round, no onsite.
 
-I would rather be accurate about why than take the flattering version. Internship performance is part of it. So is the year and a half I had already spent as an engineer at ZS Associates before the masters. Coming back a level up was those two facts together, not a manager being impressed by one summer.
-
 Which means the entirety of my full-time interview experience at Adobe is the three rounds above, sat in November 2024, for an internship.
 
 That is also why there is no separate Adobe entry in my <a href="/interviews/">interview log</a> for the full-time job. One loop, two offers, and the second one skipped a level. Counting the conversion as a loop would put an offer on that page with no rounds behind it.
