@@ -53,7 +53,7 @@ The shortest loop I have sat produced the only offer that turned into a career. 
 
 ## What it converted into
 
-The internship became a return offer, and the return offer was for **Software Engineer II** rather than the new grad level. Same product and the same team, Workfront Reviews and Approvals, which is where I still am. No second loop: no full-time application, no repeat of the algorithm round, no onsite.
+The internship became a return offer, and the return offer was for **Software Engineer II**. Same product and the same team, Workfront Reviews and Approvals, which is where I still am. No second loop: no full-time application, no repeat of the algorithm round, no onsite.
 
 Which means the entirety of my full-time interview experience at Adobe is the three rounds above, sat in November 2024, for an internship.
 
