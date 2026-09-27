@@ -198,10 +198,10 @@ export const interviews: Interview[] = [
  * //     type: 'internship',
  * //     when: '',                    // TODO YYYY-MM
  * //     source: 'cold-apply',        // TODO
- * //     reached: 'onsite',
+ * //     reached: 'phone',            // TODO was the single round an OA or a phone screen?
+ * //     rounds: 1,
  * //     outcome: 'rejected',
- * //     takeaway:
- * //         'The full loop, and the first of two Amazon rejections. The SDE1 loop came later.',
+ * //     takeaway: 'One round and out. The SDE1 loop came three years later.',
  * // },
  *
  *
