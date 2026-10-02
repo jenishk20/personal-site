@@ -114,6 +114,23 @@ export const interviews: Interview[] = [
             'Took it, and it converted into a SWE-II return offer with no second loop. One loop, two offers.',
     },
 
+    {
+        company: 'Bloomberg',
+        role: '2026 Software Engineer',
+        team: 'New York',
+        type: 'full-time',
+        when: '2025-12',
+        source: 'cold-apply',
+        // Round 2 was Bloomberg's final-round format (up to three or four hours,
+        // further interviews depending on performance), held over Zoom.
+        reached: 'onsite',
+        rounds: 2,
+        outcome: 'rejected',
+        writeup: 'two-rounds-at-bloomberg',
+        takeaway:
+            'Cleared round 1. Solved round 2 optimally in C++, but most of the hour went to explaining the language rather than the solution.',
+    },
+
     // Pending loops live in the QUEUE below, not here.
 ];
 
@@ -136,16 +153,6 @@ export const interviews: Interview[] = [
  * recorded on the Adobe internship row instead: one loop, two offers.
  *
  * FULL-TIME
- *
- * // {
- * //     company: 'Bloomberg',
- * //     role: 'Software Engineer',   // TODO confirm the title
- * //     type: 'full-time',
- * //     when: '',                    // TODO YYYY-MM
- * //     source: 'cold-apply',        // TODO referral | cold-apply | recruiter | career-fair
- * //     reached: 'phone',            // TODO oa or phone?
- * //     outcome: 'rejected',
- * // },
  *
  * // {
  * //     company: 'Meta',
