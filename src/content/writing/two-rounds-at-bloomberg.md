@@ -66,6 +66,6 @@ Bloomberg said I could choose my language. It did not say the people on the call
 In an interview the language is not only how you implement the answer. It is part of how you communicate it, and I had been treating it as only the first.
 
 <figure class="poster">
-<blockquote><p>Success is not final, failure is not fatal. It is the courage to continue that counts.</p></blockquote>
-<figcaption>Usually credited to Winston Churchill, who <a href="https://winstonchurchill.org/resources/quotes/quotes-falsely-attributed/">never said it</a>. The closest early version is a <a href="https://quoteinvestigator.com/2013/09/03/success-final/">1938 Budweiser advertisement</a>.</figcaption>
+<img src="/images/courage-to-continue.webp" alt="A mountain silhouette at dusk, with the words: Success is not final, failure is not fatal. It is the courage to continue that counts." width="400" height="500" loading="lazy" style="max-width:250px" />
+<figcaption>Image from motivation_mondays on Instagram. The quote is usually credited to Winston Churchill, who <a href="https://winstonchurchill.org/resources/quotes/quotes-falsely-attributed/">never said it</a>. The closest early version is a <a href="https://quoteinvestigator.com/2013/09/03/success-final/">1938 Budweiser advertisement</a>.</figcaption>
 </figure>
