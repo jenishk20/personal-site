@@ -131,6 +131,21 @@ export const interviews: Interview[] = [
             'Cleared round 1. Solved round 2 optimally in C++, but most of the hour went to explaining the language rather than the solution.',
     },
 
+    {
+        company: 'Dell Technologies',
+        role: 'Software Engineer Graduate Co-op',
+        team: 'Office of the CTO, AI Dev',
+        type: 'internship',
+        when: '2025-03',
+        source: 'cold-apply',
+        reached: 'offer',
+        rounds: 2,
+        outcome: 'offer',
+        writeup: 'two-rounds-at-dell',
+        takeaway:
+            'Got the Adobe offer mid-loop. The recruiter held my start-date question until after the final round, and the team moved the dates.',
+    },
+
     // Pending loops live in the QUEUE below, not here.
 ];
 
@@ -212,17 +227,6 @@ export const interviews: Interview[] = [
  * // },
  *
  *
- * // {
- * //     company: 'Dell Technologies',
- * //     role: 'Software Engineer Intern',
- * //     team: 'Boston, MA',
- * //     type: 'internship',
- * //     when: '',                    // TODO YYYY-MM (the co-op started Aug 2025)
- * //     source: 'cold-apply',        // TODO
- * //     reached: 'offer',
- * //     outcome: 'offer',
- * //     takeaway: 'Took it. Fall 2025 co-op in Boston.',
- * // },
  *
  * // {
  * //     company: 'ServiceNow',
