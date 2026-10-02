@@ -103,6 +103,8 @@ const personSchema = {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:creator" content="@JenishKothari11" />
 
+        <!-- No visible RSS link anywhere, by choice. This tag is what lets a feed
+             reader find /rss.xml when someone pastes in the site's address. -->
         <link
             rel="alternate"
             type="application/rss+xml"
@@ -144,8 +146,7 @@ const personSchema = {
                     {SITE.author} &middot; <a href={SOCIALS.x}>X</a> &middot;
                     <a href={SOCIALS.github}>GitHub</a> &middot;
                     <a href={SOCIALS.huggingface}>Hugging Face</a> &middot;
-                    <a href={SOCIALS.linkedin}>LinkedIn</a> &middot;
-                    <a href="/rss.xml">RSS</a>
+                    <a href={SOCIALS.linkedin}>LinkedIn</a>
                 </p>
             </footer>
         </main>
