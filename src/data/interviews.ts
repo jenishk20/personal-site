@@ -139,9 +139,9 @@ export const interviews: Interview[] = [
         when: '2025-03',
         source: 'cold-apply',
         reached: 'offer',
-        rounds: 2,
+        rounds: 4,
         outcome: 'offer',
-        writeup: 'two-rounds-at-dell',
+        writeup: 'four-rounds-at-dell',
         takeaway:
             'Got the Adobe offer mid-loop. The recruiter held my start-date question until after the final round, and the team moved the dates.',
     },
