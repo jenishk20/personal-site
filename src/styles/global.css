@@ -16,6 +16,9 @@
     --bg-subtle: #fafafa;
     --code-bg: #f5f5f5;
     --border: #eee;
+    /* Outlines on controls. 3:1 against the surface, the WCAG minimum for UI
+       components; --border is for hairlines and is deliberately fainter. */
+    --border-strong: #8c8c8c;
     --accent: hsl(258, 88%, 66%);
     --accent-hover: hsl(258, 88%, 76%);
     --max-width: 720px;
@@ -47,6 +50,7 @@
         --bg-subtle: #171717;
         --code-bg: #1a1a1a;
         --border: #262626;
+        --border-strong: #666;
         --accent: hsl(258, 88%, 74%);
         --accent-hover: hsl(258, 88%, 84%);
     }
@@ -132,7 +136,9 @@ p {
 /* Post metadata line under a title. */
 .meta {
     font-size: 12px;
-    color: var(--text-muted);
+    /* --text-secondary, not --text-muted: this line holds the date and the
+       view count, and muted grey failed 4.5:1 in both themes. */
+    color: var(--text-secondary);
     margin-top: -1.5rem;
     margin-bottom: 2rem;
 }
@@ -517,6 +523,7 @@ td:last-child, th:last-child {
 
 .post-stats p {
     margin: 0 0 0.5em;
+    color: var(--text);
 }
 
 /* The emoji sits on the text baseline and a touch larger than the prompt, so
@@ -528,77 +535,6 @@ td:last-child, th:last-child {
     vertical-align: -0.1em;
 }
 
-/* Like button ------------------------------------------------------------ */
-
-.post-stats {
-    margin-top: 2.5em;
-}
-
-.post-stats[hidden] {
-    display: none;
-}
-
-.post-stats p {
-    margin: 0 0 0.5em;
-}
-
-/* An authored animated cue beside the prompt: a beating heart with two small
-   ones drifting up. Hand-written SVG rather than a GIF, so it costs about a
-   kilobyte instead of a few hundred, needs no request, and takes its colour
-   from the theme. */
-.like-cue {
-    width: 26px;
-    height: 28px;
-    vertical-align: -0.4em;
-    margin-right: 0.15em;
-    overflow: visible;
-}
-
-.cue-heart,
-.cue-spark {
-    fill: var(--accent);
-    transform-box: fill-box;
-    transform-origin: center;
-}
-
-.cue-heart {
-    animation: cue-beat 2s ease-in-out infinite;
-}
-
-.cue-spark {
-    opacity: 0;
-    animation: cue-float 2s ease-out infinite;
-}
-
-.cue-spark-2 {
-    animation-delay: 1s;
-}
-
-@keyframes cue-beat {
-    0%, 55%, 100% { transform: scale(1); }
-    12% { transform: scale(1.16); }
-    24% { transform: scale(1); }
-    36% { transform: scale(1.09); }
-}
-
-@keyframes cue-float {
-    0% { opacity: 0; transform: translateY(2px) scale(0.6); }
-    25% { opacity: 0.85; }
-    100% { opacity: 0; transform: translateY(-9px) scale(0.95); }
-}
-
-/* Motion is decoration here, so honour the preference to switch it off. */
-@media (prefers-reduced-motion: reduce) {
-    .cue-heart,
-    .cue-spark {
-        animation: none;
-    }
-
-    .cue-spark {
-        opacity: 0;
-    }
-}
-
 .like {
     display: inline-flex;
     align-items: center;
@@ -607,9 +543,9 @@ td:last-child, th:last-child {
     padding: 0.4em 0.75em;
     font: inherit;
     font-size: 13px;
-    color: var(--text-secondary);
+    color: var(--text);
     background: var(--bg);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
     border-radius: 999px;
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
