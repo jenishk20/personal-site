@@ -205,11 +205,12 @@ the API is unreachable.
 
 Counts are stored as `likes:<slug>` and `views:<slug>`. Repeats are suppressed by
 storing a truncated SHA-256 of the visitor's IP plus the slug, 90 days for likes
-and 12 hours for views, so no IP addresses are retained.
+and 30 days for views, so no IP addresses are retained.
 
-**What a "view" means.** One per IP address, per post, per 12 hours. The same
-person returning after 12 hours counts again, so the number is closer to visits
-than to unique readers. It cannot be made exactly unique without tracking
+**What a "view" means.** One per IP address, per post, per 30 days. It was 12
+hours until October 2026, when it was lengthened so that a reader returning to a
+post the next day is not counted twice. Someone coming back after a month still
+counts again. It cannot be made exactly unique without tracking
 people: one reader on a phone and then a laptop counts twice, and a whole campus
 behind one Wi-Fi address counts once. The window is `VIEW_TTL_SECONDS` in the
 function. Most crawlers never count, because the view is recorded by the page's

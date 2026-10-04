@@ -18,7 +18,7 @@
  * matters, move to D1 and use `UPDATE ... SET n = n + 1`, which is atomic.
  */
 
-const VIEW_TTL_SECONDS = 60 * 60 * 12; // one unique view per visitor per 12h
+const VIEW_TTL_SECONDS = 60 * 60 * 24 * 30; // one view per visitor per post per 30 days
 const LIKE_TTL_SECONDS = 60 * 60 * 24 * 90; // remember a liker for 90 days
 const MAX_SLUG_LENGTH = 128;
 
