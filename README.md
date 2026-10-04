@@ -207,6 +207,21 @@ Counts are stored as `likes:<slug>` and `views:<slug>`. Repeats are suppressed b
 storing a truncated SHA-256 of the visitor's IP plus the slug, 90 days for likes
 and 12 hours for views, so no IP addresses are retained.
 
+**What a "view" means.** One per IP address, per post, per 12 hours. The same
+person returning after 12 hours counts again, so the number is closer to visits
+than to unique readers. It cannot be made exactly unique without tracking
+people: one reader on a phone and then a laptop counts twice, and a whole campus
+behind one Wi-Fi address counts once. The window is `VIEW_TTL_SECONDS` in the
+function. Most crawlers never count, because the view is recorded by the page's
+script and they do not run it.
+
+**The free plan allows 1,000 KV writes a day**, reset at 00:00 UTC. Each counted
+view or like costs two (the count and the fingerprint), so the site can record
+about 500 a day across all posts. Past that, writes fail, the function errors,
+and the button and view count hide themselves until the reset. Nothing looks
+broken, but a post that takes off will stop counting partway through its best
+day. The KV namespace page in the dashboard shows the day's usage.
+
 **Known limitation:** KV has no atomic increment, so simultaneous likes or views
 on the same post can drop a count. At this traffic level that is a rounding error.
 If it ever matters, move the two keys to D1 and use `UPDATE ... SET n = n + 1`.
@@ -214,6 +229,20 @@ If it ever matters, move the two keys to D1 and use `UPDATE ... SET n = n + 1`.
 **There is no comment system, by decision.** Comments on interview and failure
 writeups are a reputational liability on a site that doubles as a portfolio, and
 moderating them is unpaid work. Likes and view counts carry the signal.
+
+## Analytics
+
+Cloudflare Web Analytics is on, enabled in the dashboard under **Workers & Pages
+→ jenishkothari → Metrics**. It is not in this repo: Cloudflare injects its beacon
+script into every page at deploy time, so a change to the setting only takes
+effect on the next deploy, and searching the source for it finds nothing.
+
+It is cookieless, so it needs no consent banner, and it answers the question the
+counter cannot: where readers came from. It reports page views and visits, not
+unique visitors, for the same reason the counter cannot.
+
+Injection stops if a response carries `Cache-Control: public, no-transform`, so
+do not add that header in a `_headers` file.
 
 ## Live metrics
 
