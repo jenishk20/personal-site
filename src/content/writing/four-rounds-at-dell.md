@@ -41,7 +41,7 @@ Rounds 2 and 3 were one 90 minute session with two engineers. The first half was
 
 ## The question I held back
 
-Between the first round and the final session I got the Adobe offer: a summer internship ending on Friday 15 August. Dell's co-op would have overlapped it. The only way to do both was to start at Dell on Monday the 18th, which meant asking a team that had not yet decided whether it wanted me to change its plans for me.
+I already had a summer internship lined up: Adobe, accepted the December before, ending on Friday 15 August. Dell's co-op would have overlapped it. The only way to do both was to start at Dell on Monday the 18th, which meant asking a team that had not yet decided whether it wanted me to change its plans for me.
 
 I wrote to the recruiter before the final round and asked whether the team could be flexible. Her advice was to hold the question. Teams sometimes adjust the term for a candidate they really want, she said, so the move was to do the final interview first, let them decide I was their top choice, and only then raise the dates. Raised before the interview, the same request might have coloured how they saw me in it.
 

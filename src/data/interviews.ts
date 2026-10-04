@@ -143,7 +143,21 @@ export const interviews: Interview[] = [
         outcome: 'offer',
         writeup: 'four-rounds-at-dell',
         takeaway:
-            'Got the Adobe offer mid-loop. The recruiter held my start-date question until after the final round, and the team moved the dates.',
+            'Already had Adobe for the summer. The recruiter held my start-date question until after the final round, and the team moved the dates.',
+    },
+
+    {
+        company: 'ServiceNow',
+        role: 'Software Engineer Intern, 2025',
+        team: 'Developer Productivity',
+        type: 'internship',
+        when: '2024-11',
+        source: 'cold-apply',
+        reached: 'onsite',
+        rounds: 4,
+        outcome: 'withdrew',
+        writeup: 'four-rounds-at-servicenow',
+        takeaway: 'Four rounds, three of them in one afternoon. Results were slow to come back, and I had accepted Adobe by then.',
     },
 
     // Pending loops live in the QUEUE below, not here.
@@ -228,14 +242,4 @@ export const interviews: Interview[] = [
  *
  *
  *
- * // {
- * //     company: 'ServiceNow',
- * //     role: 'Software Engineer Intern',
- * //     type: 'internship',
- * //     when: '',                    // TODO YYYY-MM
- * //     source: 'cold-apply',        // TODO
- * //     reached: 'offer',
- * //     outcome: 'offer',
- * //     takeaway: '',                // TODO declined it, or was it for a term you could not take?
- * // },
  */
