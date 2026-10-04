@@ -133,7 +133,7 @@ export const interviews: Interview[] = [
 
     {
         company: 'Dell Technologies',
-        role: 'Software Engineer Graduate Co-op',
+        role: 'Software Engineer Intern',
         team: 'Office of the CTO, AI Dev',
         type: 'internship',
         when: '2025-03',
