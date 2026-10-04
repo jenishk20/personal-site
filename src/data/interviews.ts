@@ -173,10 +173,9 @@ export const interviews: Interview[] = [
  * "unrecorded"; an invented date is not, because /interviews/ computes all of
  * its statistics from these rows, so a guess becomes a published fact.
  *
- * Deliberately not queued: Google. Team match after clearing L3 is not an
- * outcome yet, and it stays off the page until there is an offer.
+ * Loops still in progress are left out until they finish.
  *
- * Also not queued: Adobe full-time. That offer converted from the internship
+ * Not queued: Adobe full-time. That offer converted from the internship
  * with no loop of its own, and a row reading `reached: 'offer'` with no rounds
  * behind it would add an offer to a page that counts interview loops. It is
  * recorded on the Adobe internship row instead: one loop, two offers.
