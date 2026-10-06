@@ -160,6 +160,20 @@ export const interviews: Interview[] = [
         takeaway: 'Four rounds, three of them in one afternoon. Results were slow to come back, and I had accepted Adobe by then.',
     },
 
+    {
+        company: 'Meta',
+        role: 'Production Engineer, University Grad 2026',
+        type: 'full-time',
+        when: '2026-02',
+        source: 'cold-apply',
+        reached: 'phone',
+        rounds: 2,
+        outcome: 'rejected',
+        writeup: 'two-rounds-at-meta',
+        takeaway:
+            'Two screen rounds on systems and coding, rejected within the hour, and the recruiter went quiet after.',
+    },
+
     // Pending loops live in the QUEUE below, not here.
 ];
 
@@ -182,16 +196,6 @@ export const interviews: Interview[] = [
  *
  * FULL-TIME
  *
- * // {
- * //     company: 'Meta',
- * //     role: 'Production Engineer, new grad',
- * //     type: 'full-time',
- * //     when: '',                    // TODO YYYY-MM
- * //     source: 'cold-apply',        // TODO
- * //     reached: 'phone',
- * //     outcome: 'rejected',
- * //     takeaway: 'Never got past the tech screen.',
- * // },
  *
  * // {
  * //     company: 'Stripe',
