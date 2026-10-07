@@ -61,7 +61,7 @@ There was no reply. That makes two loops on this site that ended in silence, tho
 
 It would be easy to file this entirely under a bad draw of interviewers, and I do think the evaluation was weaker for it. But there is a version of this I could have prevented.
 
-Bloomberg said I could choose my language. It did not say the people on the call would read it fluently, and I did not ask. Thirty seconds at the start, asking whether C++ worked for them and offering to switch to Python, would have cost nothing.
+Bloomberg said I could choose my language. It did not say the people on the call would read it fluently, and I did not ask. Thirty seconds at the start, asking whether C++ worked for them and offering to switch to Python, would have cost nothing. It was the second time C++ had cost me, after <a href="/two-rounds-at-stripe/">Stripe</a> two months earlier.
 
 In an interview the language is not only how you implement the answer. It is part of how you communicate it, and I had been treating it as only the first.
 
