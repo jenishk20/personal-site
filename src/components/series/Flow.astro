@@ -1,0 +1,34 @@
+---
+/**
+ * A left-to-right pipeline of labelled steps. HTML and CSS rather than an image,
+ * so it themes with the site, stays legible on a phone (where it turns
+ * vertical), and its text can be searched and read aloud.
+ */
+interface Step {
+    title: string;
+    detail?: string;
+    /** Marks the step the reader should look at, e.g. the model. */
+    emphasis?: boolean;
+}
+
+interface Props {
+    steps: Step[];
+    caption?: string;
+}
+
+const { steps, caption } = Astro.props;
+---
+
+<figure class="flow">
+    <ol class="flow-steps">
+        {
+            steps.map((s) => (
+                <li class={s.emphasis ? 'flow-step is-emphasis' : 'flow-step'}>
+                    <strong>{s.title}</strong>
+                    {s.detail && <span>{s.detail}</span>}
+                </li>
+            ))
+        }
+    </ol>
+    {caption && <figcaption>{caption}</figcaption>}
+</figure>

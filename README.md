@@ -55,6 +55,28 @@ it just renders grey, so check the slug against `TAGS`.
 
 House style: **no em dashes anywhere.** Use a comma, a full stop, or a colon.
 
+**Dollar signs start maths.** Posts render `$...$` and `$$...$$` as typeset maths
+(KaTeX, at build time), so write a literal dollar as `\$25`.
+
+### Series and interactive posts
+
+A post becomes part of a series by adding two lines of frontmatter:
+
+```markdown
+series: post-training-101
+part: 2
+```
+
+That adds the series header, a contents list built from the post's `##`
+headings, and previous and next links. Series are defined in `src/data/series.ts`,
+and each has its own page (`/post-training-101/`) listing every part, linked once
+published.
+
+Use `.mdx` instead of `.md` to put components in a post: `Flow`,
+`RecordExplorer`, `IntervalChart` and `WilsonCalculator` in
+`src/components/series/`. In MDX, write SQL inside raw HTML as a string,
+`<code>{"SELECT 'x'"}</code>`, or its quotes get turned into curly ones.
+
 ## Adding an interview
 
 `/interviews/` derives every statistic from `src/data/interviews.ts`, so the

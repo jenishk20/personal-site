@@ -19,6 +19,10 @@
     /* Outlines on controls. 3:1 against the surface, the WCAG minimum for UI
        components; --border is for hairlines and is deliberately fainter. */
     --border-strong: #8c8c8c;
+    /* Verdict badges on series records. Each clears 4.5:1 on its surface. */
+    --ok: #1a7f37;
+    --bad: #cf222e;
+    --warn: #9a6700;
     --accent: hsl(258, 88%, 66%);
     --accent-hover: hsl(258, 88%, 76%);
     --max-width: 720px;
@@ -51,6 +55,9 @@
         --code-bg: #1a1a1a;
         --border: #262626;
         --border-strong: #666;
+        --ok: #3fb950;
+        --bad: #f85149;
+        --warn: #d29922;
         --accent: hsl(258, 88%, 74%);
         --accent-hover: hsl(258, 88%, 84%);
     }
@@ -704,6 +711,510 @@ footer a:hover { color: var(--accent); }
     blockquote {
         padding: 0.5em 0.75em;
         margin: 0.75em 0;
+    }
+}
+
+/* Series ----------------------------------------------------------------- */
+
+.series-header {
+    margin: -0.75rem 0 1.5rem;
+    padding: 0.75em 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.series-header p {
+    margin: 0;
+}
+
+.series-kicker {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.series-blurb {
+    margin-top: 0.35em !important;
+    color: var(--text-secondary);
+}
+
+/* Contents: two columns where there is room, as a compact index rather than a
+   second table of contents-shaped wall. */
+.toc {
+    margin: 0 0 2rem;
+    font-size: 13px;
+}
+
+.toc-label {
+    margin: 0 0 0.4em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.toc ol {
+    margin: 0;
+    padding-left: 1.4em;
+    columns: 2;
+    column-gap: 2rem;
+}
+
+.toc li {
+    break-inside: avoid;
+    margin: 0 0 0.2em;
+}
+
+.series-nav {
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.series-step {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.series-next {
+    text-align: right;
+}
+
+.series-upcoming {
+    color: var(--text-secondary);
+}
+
+.series-all {
+    margin-top: 1rem;
+}
+
+.series-all summary {
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.series-all ol {
+    margin: 0.75em 0 0;
+    padding-left: 1.6em;
+}
+
+.series-all li {
+    margin: 0 0 0.6em;
+}
+
+.series-all li.is-current > span:first-child {
+    font-weight: 600;
+}
+
+.series-status {
+    margin-left: 0.5em;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.series-maths {
+    display: block;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Record explorer: one <details> per record. */
+.explorer {
+    margin: 1.75em 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.explorer-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1em;
+    padding: 0.5em 0.85em;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+}
+
+.explorer-count {
+    color: var(--text-secondary);
+}
+
+.explorer-row + .explorer-row {
+    border-top: 1px solid var(--border);
+}
+
+.explorer-row > summary {
+    display: grid;
+    /* The ▸ marker, the id, the verdict badge, then the summary. */
+    grid-template-columns: auto auto auto 1fr;
+    align-items: baseline;
+    gap: 0.65em;
+    padding: 0.55em 0.85em;
+    font-size: 13px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.explorer-row > summary::-webkit-details-marker {
+    display: none;
+}
+
+.explorer-row > summary::before {
+    content: '▸';
+    margin-right: -0.25em;
+    color: var(--text-secondary);
+    transition: transform 0.15s;
+}
+
+.explorer-row[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+.explorer-row > summary:hover {
+    background: var(--bg-subtle);
+}
+
+.explorer-id {
+    font-family: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.explorer-summary {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.explorer-row[open] .explorer-summary {
+    white-space: normal;
+}
+
+.explorer-fields {
+    margin: 0;
+    padding: 0.25em 0.85em 0.85em;
+    font-size: 13px;
+}
+
+.explorer-fields dt {
+    margin-top: 0.6em;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.explorer-fields dd {
+    margin: 0.15em 0 0;
+}
+
+.explorer-fields pre {
+    margin: 0.25em 0 0;
+    white-space: pre-wrap;
+}
+
+.explorer figcaption {
+    padding: 0.5em 0.85em;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.verdict {
+    padding: 0.05em 0.5em;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.verdict-ok { color: var(--ok); }
+.verdict-bad { color: var(--bad); }
+.verdict-warn { color: var(--warn); }
+.verdict-info { color: var(--text-secondary); }
+
+/* Interval chart: HTML, so text never scales below its set size. */
+.interval-chart {
+    margin: 1.75em 0;
+}
+
+.interval-chart > figcaption {
+    margin: 0 0 0.6em;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.interval-chart > figcaption strong {
+    color: var(--heading);
+}
+
+.ic-row {
+    display: grid;
+    grid-template-columns: 11rem 1fr 6.5rem;
+    align-items: center;
+    gap: 0.85em;
+    min-height: 34px;
+}
+
+.ic-label {
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.ic-note {
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.ic-track {
+    position: relative;
+    height: 18px;
+    background: linear-gradient(var(--border), var(--border)) center / 100% 1px no-repeat;
+}
+
+.ic-whisker {
+    position: absolute;
+    top: calc(50% - 5px);
+    height: 10px;
+    min-width: 2px;
+    border-left: 2px solid var(--chart-line);
+    border-right: 2px solid var(--chart-line);
+    background: linear-gradient(var(--chart-line), var(--chart-line)) center / 100% 2px no-repeat;
+    box-sizing: border-box;
+}
+
+.ic-dot {
+    position: absolute;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    background: var(--chart-line);
+    transform: translate(-50%, -50%);
+    box-sizing: content-box;
+}
+
+.ic-value {
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ic-range {
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.ic-axis {
+    min-height: 20px;
+}
+
+.ic-axis .ic-track {
+    height: 14px;
+    background: none;
+}
+
+.ic-tick {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.ic-data {
+    margin-top: 0.5em;
+    font-size: 12px;
+}
+
+.ic-data summary,
+.prose details > summary {
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.ic-caption {
+    margin: 0.5em 0 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Interval calculator. */
+.calc {
+    margin: 1.5em 0;
+    padding: 0.75em 1em;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.calc figcaption {
+    margin: 0 0 0.6em;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.calc figcaption strong {
+    color: var(--heading);
+}
+
+.calc-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75em 1.25em;
+    font-size: 13px;
+}
+
+.calc input {
+    width: 6.5em;
+    margin-left: 0.4em;
+    padding: 0.3em 0.5em;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+}
+
+.calc-out {
+    margin: 0.65em 0 0;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Maths. Display equations scroll on their own rather than widening the page. */
+.katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.25em 0;
+}
+
+.prose details {
+    margin: 1.25em 0;
+}
+
+@media (max-width: 600px) {
+    .toc ol {
+        columns: 1;
+    }
+
+    .series-step {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .series-next {
+        text-align: left;
+    }
+
+    .ic-row {
+        grid-template-columns: 1fr auto;
+        grid-template-areas: 'label value' 'track track';
+        gap: 0.2em 0.75em;
+        padding: 0.35em 0;
+    }
+
+    .ic-label { grid-area: label; }
+    .ic-value { grid-area: value; }
+    .ic-track { grid-area: track; }
+
+    .ic-axis > span:not(.ic-track) {
+        display: none;
+    }
+}
+
+.series-index {
+    padding-left: 1.6em;
+}
+
+.series-index li {
+    margin: 0 0 0.9em;
+}
+
+/* Pipeline diagram. Arrows are drawn between steps, never after the last. */
+.flow {
+    margin: 1.75em 0;
+}
+
+.flow-steps {
+    display: flex;
+    align-items: stretch;
+    gap: 1.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.flow-step {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.6em 0.7em;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.flow-step strong {
+    display: block;
+    font-size: 13px;
+    color: var(--heading);
+}
+
+.flow-step span {
+    display: block;
+    margin-top: 0.2em;
+    color: var(--text-secondary);
+}
+
+.flow-step.is-emphasis {
+    border-color: var(--chart-line);
+    box-shadow: inset 0 0 0 1px var(--chart-line);
+}
+
+.flow-step + .flow-step::before {
+    content: '→';
+    position: absolute;
+    left: -1.15rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.flow figcaption {
+    margin-top: 0.6em;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+    .flow-steps {
+        flex-direction: column;
+        gap: 1.1rem;
+    }
+
+    .flow-step + .flow-step::before {
+        content: '↓';
+        left: 50%;
+        top: -1.05rem;
+        transform: translateX(-50%);
     }
 }
 

@@ -1,0 +1,27 @@
+---
+/**
+ * A contents list built from a post's own h2 headings. Astro gives every
+ * markdown heading an id, so the links need nothing added to the post. Short
+ * posts get none: under three sections a contents list is noise.
+ */
+interface Props {
+    headings: { depth: number; slug: string; text: string }[];
+}
+
+const items = Astro.props.headings.filter((h) => h.depth === 2);
+---
+
+{
+    items.length >= 3 && (
+        <nav class="toc" aria-label="Contents">
+            <p class="toc-label">Contents</p>
+            <ol>
+                {items.map((h) => (
+                    <li>
+                        <a href={`#${h.slug}`}>{h.text}</a>
+                    </li>
+                ))}
+            </ol>
+        </nav>
+    )
+}

@@ -1,5 +1,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import mdx from '@astrojs/mdx';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,7 +11,7 @@ export default defineConfig({
     // so changing it here is the only edit needed when the domain changes.
     site: 'https://jenishkothari.pages.dev',
 
-    integrations: [sitemap()],
+    integrations: [sitemap(), mdx()],
 
     // Post URLs live at the root (/my-post/) rather than under /blog/,
     // and every route gets a trailing slash so links stay stable.
@@ -19,6 +22,11 @@ export default defineConfig({
     },
 
     markdown: {
+        // $inline$ and $$display$$ maths, typeset to HTML at build time. No maths
+        // library ships to the browser; only KaTeX's stylesheet and the fonts the
+        // page actually uses. MDX inherits this config.
+        remarkPlugins: [remarkMath],
+        rehypePlugins: [rehypeKatex],
         shikiConfig: {
             // Dual themes: Astro emits both, and a media query in global.css
             // switches to the dark values.

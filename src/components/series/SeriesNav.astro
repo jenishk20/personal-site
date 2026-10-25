@@ -1,0 +1,65 @@
+---
+/**
+ * Previous and next part, and the whole plan. A part links only once its post is
+ * published, so the full plan can be shown without ever pointing at a 404.
+ */
+import { getCollection } from 'astro:content';
+import { SERIES } from '../../data/series';
+import { publish } from '../../utils/format';
+
+interface Props {
+    series: string;
+    part: number;
+}
+
+const { series, part } = Astro.props;
+const s = SERIES[series];
+const published = new Map(
+    publish(await getCollection('writing'))
+        .filter((p) => p.data.series === series && p.data.part)
+        .map((p) => [p.data.part!, p]),
+);
+const prev = published.get(part - 1);
+const next = published.get(part + 1);
+const nextPlanned = s.parts.find((p) => p.part === part + 1);
+---
+
+<nav class="series-nav" aria-label={`${s.name}: all parts`}>
+    <div class="series-step">
+        {prev ? <a href={`/${prev.id}/`}>&larr; Part {part - 1}: {prev.data.title}</a> : <span />}
+        {
+            next ? (
+                <a class="series-next" href={`/${next.id}/`}>
+                    Part {part + 1}: {next.data.title} &rarr;
+                </a>
+            ) : (
+                nextPlanned && (
+                    <span class="series-next series-upcoming">
+                        Next, Part {part + 1}: {nextPlanned.question}
+                    </span>
+                )
+            )
+        }
+    </div>
+
+    <details class="series-all">
+        <summary>All {s.parts.length} parts of {s.name}</summary>
+        <ol>
+            {
+                s.parts.map((p) => {
+                    const post = published.get(p.part);
+                    const here = p.part === part;
+                    return (
+                        <li class={here ? 'is-current' : undefined}>
+                            {post && !here ? <a href={`/${post.id}/`}>{p.question}</a> : <span>{p.question}</span>}
+                            <span class="series-status">
+                                {here ? 'this part' : post ? '' : 'planned'}
+                            </span>
+                            <span class="series-maths">{p.maths}</span>
+                        </li>
+                    );
+                })
+            }
+        </ol>
+    </details>
+</nav>

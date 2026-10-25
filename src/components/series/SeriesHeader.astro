@@ -1,0 +1,27 @@
+---
+/**
+ * The block under a series post's title: which series, which part, and the one
+ * promise every part makes. Also the only place KaTeX's stylesheet is imported,
+ * so pages outside a series never download it.
+ */
+import 'katex/dist/katex.min.css';
+import { SERIES } from '../../data/series';
+
+interface Props {
+    series: string;
+    part: number;
+}
+
+const { series, part } = Astro.props;
+const s = SERIES[series];
+if (!s) throw new Error(`Unknown series "${series}". Add it to src/data/series.ts.`);
+---
+
+<aside class="series-header">
+    <p class="series-kicker">
+        <a href={`/${s.slug}/`}>{s.name}</a> &middot; Part {part} of {s.parts.length}
+    </p>
+    <p class="series-blurb">
+        {s.blurb} The code is on <a href={s.repo}>GitHub</a>.
+    </p>
+</aside>

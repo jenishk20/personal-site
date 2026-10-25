@@ -1,0 +1,50 @@
+---
+/**
+ * Type any score, get its 95% interval. The result is rendered on the server for
+ * the default values, so the figure reads correctly with JavaScript off; the
+ * script only makes it live.
+ */
+import { wilson } from '../../lib/wilson';
+
+interface Props {
+    correct?: number;
+    n?: number;
+}
+
+const { correct = 767, n = 1534 } = Astro.props;
+const w = wilson(correct, n);
+const line = (p: number, lo: number, hi: number) =>
+    `${(p * 100).toFixed(2)}%, with a 95% interval of ${(lo * 100).toFixed(2)}% to ${(hi * 100).toFixed(2)}%: ±${(((hi - lo) / 2) * 100).toFixed(2)} points.`;
+---
+
+<figure class="calc" data-wilson>
+    <figcaption><strong>Try it</strong> &middot; the 95% interval for any score</figcaption>
+    <div class="calc-inputs">
+        <label>Correct <input type="number" inputmode="numeric" min="0" value={correct} data-c /></label>
+        <label>out of <input type="number" inputmode="numeric" min="1" value={n} data-n /></label>
+    </div>
+    <p class="calc-out" data-out aria-live="polite">{line(w.p, w.lo, w.hi)}</p>
+</figure>
+
+<script>
+    import { wilson } from '../../lib/wilson';
+
+    for (const fig of document.querySelectorAll<HTMLElement>('[data-wilson]')) {
+        const c = fig.querySelector<HTMLInputElement>('[data-c]')!;
+        const n = fig.querySelector<HTMLInputElement>('[data-n]')!;
+        const out = fig.querySelector<HTMLElement>('[data-out]')!;
+        const update = () => {
+            const cv = Math.floor(Number(c.value));
+            const nv = Math.floor(Number(n.value));
+            if (!(nv >= 1) || !(cv >= 0) || cv > nv) {
+                out.textContent = 'Enter a number correct between 0 and the number of questions.';
+                return;
+            }
+            const w = wilson(cv, nv);
+            const pct = (v: number) => (v * 100).toFixed(2);
+            out.textContent = `${pct(w.p)}%, with a 95% interval of ${pct(w.lo)}% to ${pct(w.hi)}%: ±${(((w.hi - w.lo) / 2) * 100).toFixed(2)} points.`;
+        };
+        c.addEventListener('input', update);
+        n.addEventListener('input', update);
+    }
+</script>

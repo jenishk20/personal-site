@@ -11,6 +11,8 @@ import { glob } from 'astro/loaders';
  *   draft       true keeps it off every index and out of the build
  *   likes       false hides the like button on that page
  *   updated     optional; shown as "updated <date>"
+ *   series      slug of a series in src/data/series.ts, e.g. "post-training-101"
+ *   part        this post's number within that series
  */
 const postSchema = z.object({
     title: z.string(),
@@ -20,10 +22,12 @@ const postSchema = z.object({
     draft: z.boolean().default(false),
     likes: z.boolean().default(true),
     updated: z.coerce.date().optional(),
+    series: z.string().optional(),
+    part: z.number().int().positive().optional(),
 });
 
 const writing = defineCollection({
-    loader: glob({ pattern: '**/*.md', base: './src/content/writing' }),
+    loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing' }),
     schema: postSchema,
 });
 

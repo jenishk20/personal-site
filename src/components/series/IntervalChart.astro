@@ -1,0 +1,86 @@
+---
+/**
+ * Accuracy with its 95% Wilson interval, one row per run.
+ *
+ * Laid out in HTML and CSS rather than SVG so labels stay at full size on a
+ * phone: an SVG scales its text down with everything else. The exact numbers
+ * are in a table underneath, so nothing is readable only from the drawing.
+ */
+import { wilson } from '../../lib/wilson';
+
+interface Row {
+    label: string;
+    correct: number;
+    n: number;
+    /** Shown under the label, e.g. "BIRD's own script". */
+    note?: string;
+}
+
+interface Props {
+    title: string;
+    rows: Row[];
+    /** Axis range in percent. Defaults to a padded range around the data. */
+    min?: number;
+    max?: number;
+    caption?: string;
+}
+
+const { title, rows, caption } = Astro.props;
+const data = rows.map((r) => ({ ...r, ...wilson(r.correct, r.n) }));
+
+const lo = Math.min(...data.map((d) => d.lo * 100));
+const hi = Math.max(...data.map((d) => d.hi * 100));
+const span = Math.max(hi - lo, 4);
+const min = Astro.props.min ?? Math.max(0, Math.floor((lo - span * 0.15) / 5) * 5);
+const max = Astro.props.max ?? Math.min(100, Math.ceil((hi + span * 0.15) / 5) * 5);
+
+const step = [1, 2, 5, 10, 20, 25].find((s) => (max - min) / s <= 6) ?? 25;
+const ticks: number[] = [];
+for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) ticks.push(v);
+
+const x = (pct: number) => ((pct - min) / (max - min)) * 100;
+const f = (v: number) => (v * 100).toFixed(2);
+const half = (d: (typeof data)[number]) => (((d.hi - d.lo) / 2) * 100).toFixed(2);
+---
+
+<figure class="interval-chart">
+    <figcaption><strong>{title}</strong> &middot; accuracy with its 95% Wilson interval</figcaption>
+    <div class="ic-rows">
+        {
+            data.map((d) => (
+                <div class="ic-row">
+                    <span class="ic-label">
+                        {d.label}
+                        {d.note && <span class="ic-note">{d.note}</span>}
+                    </span>
+                    <span class="ic-track" aria-hidden="true">
+                        <span class="ic-whisker" style={`left:${x(d.lo * 100)}%;width:${x(d.hi * 100) - x(d.lo * 100)}%`} />
+                        <span class="ic-dot" style={`left:${x(d.p * 100)}%`} />
+                    </span>
+                    <span class="ic-value">
+                        {f(d.p)}%<span class="ic-range"> ±{half(d)}</span>
+                    </span>
+                </div>
+            ))
+        }
+        <div class="ic-row ic-axis" aria-hidden="true">
+            <span />
+            <span class="ic-track">
+                {ticks.map((t) => <span class="ic-tick" style={`left:${x(t)}%`}>{t}%</span>)}
+            </span>
+            <span />
+        </div>
+    </div>
+    <details class="ic-data">
+        <summary>Data</summary>
+        <table>
+            <thead><tr><th>Run</th><th>Correct</th><th>Accuracy</th><th>95% interval</th></tr></thead>
+            <tbody>
+                {data.map((d) => (
+                    <tr><td>{d.label}</td><td>{d.correct.toLocaleString('en-US')} / {d.n.toLocaleString('en-US')}</td><td>{f(d.p)}%</td><td>{f(d.lo)}% to {f(d.hi)}%</td></tr>
+                ))}
+            </tbody>
+        </table>
+    </details>
+    {caption && <p class="ic-caption">{caption}</p>}
+</figure>

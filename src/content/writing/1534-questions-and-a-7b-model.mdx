@@ -1,0 +1,138 @@
+---
+title: 1,534 questions and a 7B model
+description: Part 1 of Post-Training 101. Why I am post-training a 7B model to write SQL, what I want to learn along the way, and a first look at BIRD, the benchmark it will be graded on.
+date: 2026-10-25
+tag: post-training
+series: post-training-101
+part: 1
+draft: false
+---
+
+import Flow from '../../components/series/Flow.astro';
+
+I want to understand post-training properly. Not just which library call to make, but why each method works, down to the maths. So I am going to take one small open model, Qwen2.5-Coder-7B, and teach it to turn English questions into SQL, one technique at a time, writing up each step here.
+
+This first post is the plan and the data. No model runs yet.
+
+## The goal
+
+Two things.
+
+**Learn each method in depth.** Fine-tuning, distillation, DPO and GRPO: derive each one, implement it, and see what it actually does to the model.
+
+**See how far reinforcement learning can take a small model.** There is already a good bar. Snowflake trained [Arctic-Text2SQL-R1-7B](https://huggingface.co/Snowflake/Arctic-Text2SQL-R1-7B) with GRPO, rewarding only whether the SQL runs and returns the right rows, and it [scores](https://arxiv.org/abs/2505.20315) 68.9% on BIRD dev and 68.5% on the hidden test set. It started from a model already tuned for SQL. I am starting from plain Qwen, so I also get to see which step contributes what.
+
+## The road ahead
+
+| Stage | Parts | What I will try |
+|---|---|---|
+| Baselines | 2 to 4 | The model as it is, better prompts, and frontier models for comparison |
+| Supervised learning | 5 to 7 | Fine-tuning, distilling from a bigger model, voting over samples |
+| Preferences and RL | 8 and 9 | DPO, then GRPO |
+| The final exam | 10 | BIRD's hidden test set |
+
+## The benchmark: BIRD
+
+[BIRD](https://bird-bench.github.io/) is 12,751 questions over 95 real databases, each with the SQL that answers it.
+
+| Split | Questions | What it is for |
+|---|---|---|
+| Train | 9,428 | Training |
+| Dev | 1,534 | Measuring progress, over 11 databases |
+| Test | 1,789 | The final score. Hidden: BIRD runs your model for you |
+
+I will measure everything on dev until the final part. Its databases range from California schools to Formula 1 to a Czech bank, and its questions are tagged simple (925), moderate (464) or challenging (145).
+
+BIRD also released a cleaned dev set in November 2025, dev-1106, which fixes 451 of the answer keys. I will report both: the original because papers use it, and dev-1106 because it is closer to correct.
+
+<details>
+<summary>All 11 dev databases</summary>
+
+| Database | Questions | Tables |
+|---|---|---|
+| card_games | 191 | 7 |
+| codebase_community | 186 | 8 |
+| formula_1 | 174 | 14 |
+| thrombosis_prediction | 163 | 3 |
+| student_club | 158 | 8 |
+| toxicology | 145 | 4 |
+| superhero | 129 | 10 |
+| european_football_2 | 129 | 8 |
+| financial | 106 | 8 |
+| california_schools | 89 | 3 |
+| debit_card_specializing | 64 | 6 |
+
+</details>
+
+## What one question looks like
+
+The model gets the database's tables and columns, the question, and usually a short **evidence** hint. It writes one SQL query, the query runs, and its rows are compared with the answer key's.
+
+<Flow steps={[
+    { title: 'Prompt', detail: 'Tables and columns, the question, the evidence hint' },
+    { title: 'Model', detail: 'Writes one SQL query', emphasis: true },
+    { title: 'Database', detail: 'Runs the query' },
+    { title: 'Answer key', detail: 'Its rows are compared with the right ones' },
+]} />
+
+Here is question 5, from the California schools database:
+
+> **Question:** How many schools with an average score in Math greater than 400 in the SAT test are exclusively virtual?
+>
+> **Evidence:** Exclusively virtual refers to `Virtual = 'F'`
+
+```sql
+SELECT COUNT(DISTINCT T2.School)
+FROM satscores AS T1
+INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode
+WHERE T2.Virtual = 'F' AND T1.AvgScrMath > 400
+```
+
+The answer is **4**:
+
+| School | County | Virtual | Average SAT Math |
+|---|---|---|---|
+| Capistrano Connections Academy | Orange | F | 513 |
+| California Virtual Academy @ Los Angeles | Los Angeles | F | 502 |
+| California Connections Academy @ Ripon | San Joaquin | F | 487 |
+| Insight @ Los Angeles | Los Angeles | F | 437 |
+
+That hint matters more than it looks. 973 schools have an SAT Math average above 400, and the `Virtual` column holds `F`, `N`, `P` or nothing. Nothing in the schema says `F` means exclusively virtual. Part 2 measures how much the model loses without it.
+
+## Three difficulties
+
+Harder questions are not about harder topics. The SQL just has to do more. Three examples, exactly as BIRD writes them:
+
+<table class="rounds">
+<thead>
+<tr><th>Difficulty</th><th>Question and evidence</th><th>Answer-key SQL</th><th>Answer</th></tr>
+</thead>
+<tbody>
+<tr><td data-label="Difficulty">Simple</td><td data-label="Question and evidence">How many schools with an average score in Math greater than 400 in the SAT test are exclusively virtual? <em>Exclusively virtual refers to Virtual = 'F'</em></td><td data-label="Answer-key SQL"><code>{"SELECT COUNT(DISTINCT T2.School) FROM satscores AS T1 INNER JOIN schools AS T2 ON T1.cds = T2.CDSCode WHERE T2.Virtual = 'F' AND T1.AvgScrMath > 400"}</code></td><td data-label="Answer">4</td></tr>
+<tr><td data-label="Difficulty">Moderate</td><td data-label="Question and evidence">How many accounts who choose issuance after transaction are staying in East Bohemia region? <em>A3 contains the data of region; 'POPLATEK PO OBRATU' represents for 'issuance after transaction'.</em></td><td data-label="Answer-key SQL"><code>{"SELECT COUNT(T2.account_id) FROM district AS T1 INNER JOIN account AS T2 ON T1.district_id = T2.district_id WHERE T1.A3 = 'east Bohemia' AND T2.frequency = 'POPLATEK PO OBRATU'"}</code></td><td data-label="Answer">13</td></tr>
+<tr><td data-label="Difficulty">Challenging</td><td data-label="Question and evidence">For the branch which located in the south Bohemia with biggest number of inhabitants, what is the percentage of the male clients? <em>Percentage of the male clients = DIVIDE(COUNT(male clients), COUNT(clients)) * 100; Male refers to gender = 'M', A3 is the region name. A4 contains the information about inhabitants.</em></td><td data-label="Answer-key SQL"><code>{"SELECT CAST(SUM(T1.gender = 'M') AS REAL) * 100 / COUNT(T1.client_id) FROM client AS T1 INNER JOIN district AS T2 ON T1.district_id = T2.district_id WHERE T2.A3 = 'south Bohemia' GROUP BY T2.A4 ORDER BY T2.A4 DESC LIMIT 1"}</code></td><td data-label="Answer">44.26</td></tr>
+</tbody>
+</table>
+
+In the moderate one the data is in Czech, and only the hint says `'POPLATEK PO OBRATU'` means issuance after transaction. The challenging one is also an answer key dev-1106 corrects: it sorts population as text and picks the wrong district.
+
+## How the model is run
+
+For now, every run is a single shot:
+
+<table class="facts">
+    <tbody>
+        <tr><th scope="row">Turns</th><td>One prompt in, one answer out</td></tr>
+        <tr><th scope="row">Attempts</th><td>One, with greedy decoding, so the same prompt always gets the same answer</td></tr>
+        <tr><th scope="row">Tools</th><td>None. The model cannot run a query or look at the data</td></tr>
+        <tr><th scope="row">Feedback</th><td>None. It never sees whether its SQL ran</td></tr>
+    </tbody>
+</table>
+
+That is the hard way to play, on purpose: any improvement has to come from the model or the prompt. A lot of the leaderboard's top systems are agents instead, which look at the data, run a draft and fix their errors. I want to try that too, later, and see how it compares with what training buys.
+
+## What comes next
+
+Part 2 runs Qwen2.5-Coder-7B with no training, both Base and Instruct, with and without the evidence hint. It also covers how answers are scored, and why every score is a few points of noise either way.
+
+<small>BIRD is by Jinyang Li and colleagues ([arXiv 2305.03111](https://arxiv.org/abs/2305.03111)) and is shared under CC BY-SA 4.0. The questions, SQL and rows quoted here are from it.</small>

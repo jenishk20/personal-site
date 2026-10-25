@@ -1,0 +1,71 @@
+---
+/**
+ * A browsable list of per-question records: one row per record, expanding to
+ * every field behind it. Native <details>, so it needs no JavaScript and works
+ * with search-in-page and screen readers.
+ *
+ * Fields with `code: 'sql'` are highlighted with the same dual light and dark
+ * themes as code blocks in posts.
+ */
+import { Code } from 'astro:components';
+
+export interface ExplorerField {
+    name: string;
+    value: string;
+    code?: 'sql' | 'text';
+}
+
+export interface ExplorerRecord {
+    id: string | number;
+    /** The short verdict shown as a badge, e.g. "correct" or "timeout". */
+    label: string;
+    tone?: 'ok' | 'bad' | 'warn' | 'info';
+    summary: string;
+    fields: ExplorerField[];
+}
+
+interface Props {
+    title: string;
+    records: ExplorerRecord[];
+    caption?: string;
+}
+
+const { title, records, caption } = Astro.props;
+---
+
+<figure class="explorer">
+    <div class="explorer-head">
+        <strong>{title}</strong>
+        <span class="explorer-count">{records.length} {records.length === 1 ? 'record' : 'records'}</span>
+    </div>
+    <div class="explorer-rows">
+        {
+            records.map((r) => (
+                <details class="explorer-row">
+                    <summary>
+                        <span class="explorer-id">{r.id}</span>
+                        <span class={`verdict verdict-${r.tone ?? 'info'}`}>{r.label}</span>
+                        <span class="explorer-summary">{r.summary}</span>
+                    </summary>
+                    <dl class="explorer-fields">
+                        {r.fields.map((f) => (
+                            <>
+                                <dt>{f.name}</dt>
+                                <dd>
+                                    {f.code === 'sql' ? (
+                                        <Code code={f.value} lang="sql" themes={{ light: 'github-light', dark: 'github-dark' }} />
+                                    ) : f.code === 'text' ? (
+                                        <pre class="explorer-text">{f.value}</pre>
+                                    ) : (
+                                        f.value
+                                    )}
+                                </dd>
+                            </>
+                        ))}
+                    </dl>
+                </details>
+            ))
+        }
+    </div>
+    {caption && <figcaption>{caption}</figcaption>}
+</figure>

@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SERIES } from '../data/series';
+import { publish } from '../utils/format';
+
+/**
+ * The series' home page: every planned part, linked once it is published.
+ * Series part headers link here.
+ */
+const s = SERIES['post-training-101'];
+const published = new Map(
+    publish(await getCollection('writing'))
+        .filter((p) => p.data.series === s.slug && p.data.part)
+        .map((p) => [p.data.part!, p]),
+);
+---
+
+<Base title={s.name} description={s.blurb}>
+    <article>
+        <h1>{s.name}</h1>
+        <p class="lede">{s.blurb} The code is on <a href={s.repo}>GitHub</a>.</p>
+
+        <ol class="series-index">
+            {
+                s.parts.map((p) => {
+                    const post = published.get(p.part);
+                    return (
+                        <li>
+                            {post ? <a href={`/${post.id}/`}>{post.data.title}</a> : <span>{p.question}</span>}
+                            {!post && <span class="series-status">planned</span>}
+                            <span class="series-maths">{p.maths}</span>
+                        </li>
+                    );
+                })
+            }
+        </ol>
+    </article>
+</Base>
