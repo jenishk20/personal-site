@@ -1,10 +1,11 @@
 ---
 /**
- * The block under a series post's title: which series, which part, and the one
- * promise every part makes. Also the only place KaTeX's stylesheet is imported,
- * so pages outside a series never download it.
+ * The block under a series post's title: which series and which part. Also the
+ * only place KaTeX's stylesheet is linked, so pages outside a series never
+ * download it. It is linked as a plain file (copied by scripts/copy-katex.mjs)
+ * rather than imported, because an import here would be bundled into the
+ * stylesheet every post shares.
  */
-import 'katex/dist/katex.min.css';
 import { SERIES } from '../../data/series';
 
 interface Props {
@@ -16,6 +17,8 @@ const { series, part } = Astro.props;
 const s = SERIES[series];
 if (!s) throw new Error(`Unknown series "${series}". Add it to src/data/series.ts.`);
 ---
+
+<link rel="stylesheet" href="/katex/katex.min.css" />
 
 <aside class="series-header">
     <p class="series-kicker">

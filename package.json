@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/copy-katex.mjs",
+    "prebuild": "node scripts/copy-katex.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
