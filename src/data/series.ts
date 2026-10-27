@@ -33,7 +33,7 @@ export const SERIES: Record<string, Series> = {
             'Post-training a small open model to write SQL, one technique at a time, in public.',
         repo: 'https://github.com/jenishk20/glassbox-sql',
         parts: [
-            { part: 1, question: 'The plan, and the benchmark: what BIRD asks a model to do', maths: 'None yet: the data first' },
+            { part: 1, question: 'Understanding the data and the benchmark', maths: 'None yet: the data first' },
             { part: 2, question: 'How good are Qwen2.5-Coder-7B Base and Instruct, with and without the evidence hint?', maths: 'How answers are scored; 95% intervals; softmax and greedy decoding; the McNemar test' },
             { part: 3, question: 'What is each prompt ingredient worth?', maths: 'Testing each change for significance; repetition penalty on logits' },
             { part: 4, question: 'How good are frontier models on the same prompt?', maths: 'Tokens to dollars; cost per correct answer' },
