@@ -80,12 +80,27 @@ const showStars =
             read from the API when this page is built, not typed in by hand.
         </p>
 
+        <h2>Post-Training 101: an RL recipe for text-to-SQL, in progress</h2>
+        <p>
+            Taking Qwen2.5-Coder-7B from no training through SFT, DPO and GRPO on
+            BIRD, one part at a time, with the maths behind each step. The
+            environment is open on
+            <a href="https://github.com/jenishk20/glassbox-sql">GitHub</a>.
+            <a href="/understanding-the-data-and-the-benchmark/"
+                >Part 1: Understanding the data and the benchmark</a
+            >.
+        </p>
+
         <h2>A 7B that ties a 1.6T model at text-to-SQL</h2>
         <p>
             <Tag tag="post-training" />
             <a href="https://github.com/jenishk20/finetuning-text-to-sql"
                 >finetuning-text-to-sql</a
             >{showStars && <span class="date"> &middot; {formatCount(mainRepo.stars)} stars</span>}
+        </p>
+        <p>
+            This was the first study. <a href="/post-training-101/">Post-Training 101</a>
+            rebuilds it step by step, in the open.
         </p>
         <p>
             Qwen2.5-Coder-7B, post-trained and benchmarked on BIRD dev (1,534
