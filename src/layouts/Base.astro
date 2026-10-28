@@ -13,6 +13,11 @@ interface Props {
     publishedAt?: Date;
     /** Suppress the JSON-LD Person block on pages that aren't the homepage. */
     isHome?: boolean;
+    /** Title for browser tabs and link previews, when it needs more context than
+        the on-page heading (a series part names its series and number). */
+    shareTitle?: string;
+    /** Site-relative path to a 1200x630 link-preview image. */
+    image?: string;
 }
 
 const {
@@ -21,9 +26,11 @@ const {
     type = 'website',
     publishedAt,
     isHome = false,
+    shareTitle,
+    image,
 } = Astro.props;
 
-const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
+const pageTitle = (shareTitle ?? title) ? `${shareTitle ?? title} · ${SITE.title}` : SITE.title;
 
 // Derived from `site` in astro.config.mjs — always ends in a slash.
 // The localhost fallback only applies if `site` is ever unset.
@@ -88,7 +95,7 @@ const personSchema = {
         <link rel="canonical" href={canonical} />
 
         <meta property="og:type" content={type} />
-        <meta property="og:title" content={title ?? SITE.title} />
+        <meta property="og:title" content={shareTitle ?? title ?? SITE.title} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonical} />
         <meta property="og:site_name" content={SITE.title} />
@@ -100,7 +107,17 @@ const personSchema = {
                 />
             )
         }
-        <meta name="twitter:card" content="summary" />
+        {
+            image && (
+                <>
+                    <meta property="og:image" content={new URL(image, siteUrl).href} />
+                    <meta property="og:image:width" content="1200" />
+                    <meta property="og:image:height" content="630" />
+                    <meta name="twitter:image" content={new URL(image, siteUrl).href} />
+                </>
+            )
+        }
+        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:creator" content="@JenishKothari11" />
 
         <!-- No visible RSS link anywhere, by choice. This tag is what lets a feed

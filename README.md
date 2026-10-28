@@ -67,6 +67,18 @@ series: post-training-101
 part: 2
 ```
 
+Each part should also get a link-preview image, made once after its title is
+final and committed:
+
+```bash
+node scripts/og-card.mjs <post-slug>     # writes public/og/<post-slug>.png
+```
+
+It renders with the locally installed Chrome (Cloudflare's build has none).
+Any post with a matching `public/og/<slug>.png` gets a large preview card on X
+and LinkedIn; series parts also get a share title that names the series and
+part.
+
 That adds the series header, a contents list built from the post's `##`
 headings, and previous and next links. Series are defined in `src/data/series.ts`,
 and each has its own page (`/post-training-101/`) listing every part, linked once

@@ -6,6 +6,8 @@ import Toc from '../components/Toc.astro';
 import SeriesHeader from '../components/series/SeriesHeader.astro';
 import SeriesNav from '../components/series/SeriesNav.astro';
 import { formatDate } from '../utils/format';
+import { existsSync } from 'node:fs';
+import { SERIES } from '../data/series';
 
 interface Props {
     title: string;
@@ -44,11 +46,17 @@ const {
 
 const inSeries = Boolean(series && part);
 
+// In a link preview the heading alone ("Understanding the data and the
+// benchmark") says nothing about which data, so a series part also names its
+// series and number. Its preview image comes from scripts/og-card.mjs.
+const shareTitle = inSeries ? `${SERIES[series!].name}, Part ${part}: ${title}` : undefined;
+const image = existsSync(`public/og/${slug}.png`) ? `/og/${slug}.png` : undefined;
+
 const words = body.trim().split(/\s+/).filter(Boolean).length;
 const minutes = Math.max(1, Math.round(words / 220));
 ---
 
-<Base title={title} description={description} type="article" publishedAt={date}>
+<Base title={title} description={description} type="article" publishedAt={date} shareTitle={shareTitle} image={image}>
     <article>
         <h1>{title}</h1>
 
