@@ -1,0 +1,231 @@
+---
+title: "The starting line: a 7B against the frontier"
+description: Part 2 of Post-Training 101. Qwen2.5-Coder-7B with no training, next to three much larger models, with and without BIRD's evidence hint, and how far each score can be trusted.
+date: 2026-11-06
+tag: post-training
+series: post-training-101
+part: 2
+draft: false
+---
+
+import IntervalChart from '../../components/series/IntervalChart.astro';
+import WilsonCalculator from '../../components/series/WilsonCalculator.astro';
+import RecordExplorer from '../../components/series/RecordExplorer.astro';
+
+export const hintHurt = [
+    {
+        id: 916,
+        label: 'wrong case',
+        tone: 'warn',
+        summary: "The hint says 'italian'. The database stores 'Italian'.",
+        fields: [
+            { name: 'Question', value: 'Please list the surnames of all the Italian drivers.' },
+            { name: 'Hint', value: "Italian refers to nationality = 'italian'" },
+            { name: 'Without the hint', value: "SELECT surname FROM drivers WHERE nationality = 'Italian';", code: 'sql' },
+            { name: 'Result', value: '97 rows. Correct.' },
+            { name: 'With the hint', value: "SELECT surname FROM drivers WHERE nationality = 'italian';", code: 'sql' },
+            { name: 'Result', value: 'No rows. SQLite compares text exactly, capital letters included, so nothing matches.' },
+        ],
+    },
+    {
+        id: 677,
+        label: 'not SQLite',
+        tone: 'warn',
+        summary: 'The hint uses YEAR(), which SQLite does not have.',
+        fields: [
+            { name: 'Question', value: 'How many posts did Jay Stevens have in 2010?' },
+            { name: 'Hint', value: "DisplayName = 'Jay Stevens'; in 2010 refers to YEAR(CreationDate) = 2010;" },
+            { name: 'Without the hint', value: "SELECT COUNT(*)\nFROM posts\nJOIN users ON posts.OwnerUserId = users.Id\nWHERE users.DisplayName = 'Jay Stevens'\n  AND STRFTIME('%Y', posts.CreaionDate) = '2010';", code: 'sql' },
+            { name: 'Result', value: '3. Correct.' },
+            { name: 'With the hint', value: "SELECT COUNT(*)\nFROM posts\nJOIN users ON posts.OwnerUserId = users.Id\nWHERE users.DisplayName = 'Jay Stevens' AND YEAR(posts.CreaionDate) = 2010;", code: 'sql' },
+            { name: 'Result', value: 'Error: no such function.' },
+        ],
+    },
+    {
+        id: 1490,
+        label: 'integer division',
+        tone: 'warn',
+        summary: "Following the hint's formula in order rounds the answer down to 0.",
+        fields: [
+            { name: 'Question', value: 'How many percent of LAM customer consumed more than 46.73?' },
+            { name: 'Hint', value: 'Percentage of LAM customer consumed more than 46.73 = (Total no. of LAM customers who consumed more than 46.73 / Total no. of LAM customers) * 100.' },
+            { name: 'Without the hint', value: "SELECT CAST(SUM(CASE WHEN T2.Consumption > 46.73 THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(T1.CustomerID) AS Percentage\nFROM customers AS T1\nJOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID\nWHERE T1.Segment = 'LAM';", code: 'sql' },
+            { name: 'Result', value: '98.53. Correct.' },
+            { name: 'With the hint', value: "SELECT (SUM(CASE WHEN T2.Consumption > 46.73 THEN 1 ELSE 0 END) / COUNT(T1.CustomerID)) * 100 AS Percentage\nFROM customers AS T1\nJOIN yearmonth AS T2 ON T1.CustomerID = T2.CustomerID\nWHERE T1.Segment = 'LAM';", code: 'sql' },
+            { name: 'Result', value: '0. Dividing one whole number by another, SQLite drops the fraction before the * 100.' },
+        ],
+    },
+    {
+        id: 788,
+        label: 'contradicts the key',
+        tone: 'warn',
+        summary: "The hint's formula and the answer key compute different percentages.",
+        fields: [
+            { name: 'Question', value: 'How many percent of female heroes were published by Marvel Comics?' },
+            { name: 'Hint', value: "percent = MULTIPLY(DIVIDE(SUM(gender = 'Female' WHERE publisher_name = 'Marvel Comics'), COUNT(publisher_name = 'Marvel Comics')), 100); ..." },
+            { name: 'Without the hint', value: "SELECT CAST(SUM(CASE WHEN T2.publisher_name = 'Marvel Comics' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(*) AS percentage\nFROM superhero AS T1\nJOIN publisher AS T2 ON T1.publisher_id = T2.id\nJOIN gender AS T3 ON T1.gender_id = T3.id\nWHERE T3.gender = 'Female';", code: 'sql' },
+            { name: 'Result', value: '54.95: the share of female heroes who are Marvel. Correct.' },
+            { name: 'With the hint', value: "SELECT CAST(SUM(CASE WHEN T1.gender = 'Female' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(*) AS percent\nFROM gender AS T1\nJOIN superhero AS T2 ON T1.id = T2.gender_id\nJOIN publisher AS T3 ON T2.publisher_id = T3.id\nWHERE T3.publisher_name = 'Marvel Comics';", code: 'sql' },
+            { name: 'Result', value: "28.68: the share of Marvel heroes who are female, exactly what the hint asks for. Wrong by the answer key." },
+        ],
+    },
+];
+
+Before training anything, I need to know where the model starts. So this part runs Qwen2.5-Coder-7B exactly as it comes, on all 1,534 BIRD dev questions, next to three much bigger models given the same prompts. Every model answers each question twice: once without BIRD's evidence hint, once with it.
+
+## The five models
+
+- **Qwen2.5-Coder-7B**, the base model. It is not a chat model, so it gets the prompt as plain text ending in an opened `sql` code block, and carries on from there.
+- **Qwen2.5-Coder-7B-Instruct**, the same model after Qwen's own instruction tuning. It gets the prompt as a chat message.
+- **Three frontier models** for comparison: Beam 1.0 (501B parameters, 23B used per token), DeepSeek V4.1-Flash, and Nemotron 3.5 Super (120B, 12B used per token). They get the same chat message as Instruct. DeepSeek thinks out loud before answering, so it gets up to 65,536 tokens per answer instead of 16,384, enough that it rarely runs out before writing the SQL.
+
+All five use greedy decoding and get one try per question. This is the whole prompt for question 5 from Part 1, with the schema shortened:
+
+````text
+You are given a SQLite database and a question about it. Write one SQL query that answers the question.
+
+Database schema:
+CREATE TABLE satscores (
+  cds TEXT,
+  AvgScrMath INTEGER,
+  ...
+);
+
+CREATE TABLE schools (
+  CDSCode TEXT,
+  Virtual TEXT,
+  ...
+);
+
+Evidence: Exclusively virtual refers to Virtual = 'F'
+
+Question: How many schools with an average score in Math greater than 400 in the SAT test are exclusively virtual?
+
+Return only the SQL query, in a ```sql code block.
+````
+
+Without the hint, the `Evidence` line is left out. Nothing else changes.
+
+## How an answer is scored
+
+The last SQL block in the model's answer is run on the real database, and its rows are compared with the rows the answer key returns. It is **correct** if the two sets of rows are equal. Order and duplicates do not count, the same rule as BIRD's own scoring script. Everything else is wrong, and gets one label saying how:
+
+<table class="facts">
+    <tbody>
+        <tr><th scope="row">Wrong result</th><td>The SQL ran but returned different rows</td></tr>
+        <tr><th scope="row">SQL error</th><td>SQLite rejected the query</td></tr>
+        <tr><th scope="row">Timeout</th><td>It ran for more than 30 seconds</td></tr>
+        <tr><th scope="row">No SQL</th><td>There was no SQL block in the answer</td></tr>
+        <tr><th scope="row">Truncated</th><td>The answer hit the length limit before the SQL</td></tr>
+    </tbody>
+</table>
+
+The score is the share of the 1,534 questions marked correct.
+
+## The results
+
+| Model | Without the hint | With the hint | What the hint adds |
+|---|---|---|---|
+| Beam 1.0 | 50.0% | 63.6% | +13.6 |
+| DeepSeek V4.1-Flash | 46.9% | 62.2% | +15.3 |
+| Nemotron 3.5 Super | 36.0% | 56.1% | +20.0 |
+| Qwen2.5-Coder-7B-Instruct | 32.4% | 49.8% | +17.4 |
+| Qwen2.5-Coder-7B | 26.7% | 38.7% | +12.0 |
+
+Three things stand out.
+
+**The hint is worth more than most of the size gap.** It adds 12 to 20 points to every model. With it, the 7B scores 49.8%, level with Beam's 50.0% without it.
+
+**Instruction tuning is worth 11 points.** With the hint, Instruct beats Base by 11 points, so every later part starts from Instruct.
+
+**There are 14 points to close.** With the hint, Instruct is 13.8 points behind Beam. That is the gap training has to close, and Arctic-Text2SQL-R1's 68.9% is 5 points past that again.
+
+<IntervalChart
+    title="BIRD dev, 1,534 questions"
+    rows={[
+        { label: 'Beam 1.0', note: 'with the hint', correct: 975, n: 1534 },
+        { label: 'DeepSeek V4.1-Flash', note: 'with the hint', correct: 954, n: 1534 },
+        { label: 'Nemotron 3.5 Super', note: 'with the hint', correct: 860, n: 1534 },
+        { label: 'Beam 1.0', note: 'without the hint', correct: 767, n: 1534 },
+        { label: 'Qwen 7B Instruct', note: 'with the hint', correct: 764, n: 1534 },
+        { label: 'Qwen 7B Base', note: 'with the hint', correct: 593, n: 1534 },
+    ]}
+/>
+
+## How sure are these numbers?
+
+Start with a coin. Flip it 10 times and get 6 heads, and nobody would say it lands heads 60% of the time. Flip it 1,534 times and the share of heads gets close to the coin's real tendency, but never exactly.
+
+A benchmark works the same way. Each question is one flip: the model gets it right or wrong. Instruct got 764 of 1,534 right, 49.8%. On 1,534 different questions of the same kind, it would have scored a point or two higher or lower. A **95% interval** is the range the model's real skill very likely falls in, here 47.3% to 52.3%. The 95% describes the method: run the experiment on 100 fresh sets of questions, and about 95 of the 100 ranges would contain the real value. The whiskers on the chart above are these intervals.
+
+**Where the ±2.5 comes from.** With $n$ flips and a chance $p$ of heads, the share of heads typically wobbles by $\sqrt{p(1-p)/n}$. For $p = 0.5$ and $n = 1{,}534$ that is 1.28 points. About 95% of results land within 1.96 wobbles of the truth, so with $\hat p$ the score:
+
+$$
+\hat p \pm 1.96\sqrt{\frac{\hat p(1-\hat p)}{n}} = 49.8\% \pm 2.5
+$$
+
+**Why not stop there?** That formula breaks with few questions, or with scores near 0% or 100%:
+
+| Result | That formula | Wilson |
+|---|---|---|
+| 1 right out of 10 | −8.6% to 28.6% | 1.8% to 40.4% |
+| 0 right out of 10 | 0% to 0% | 0% to 27.8% |
+| 764 right out of 1,534 | 47.3% to 52.3% | 47.3% to 52.3% |
+
+A score below zero is impossible, and 0 out of 10 does not prove a model can never get one right. The Wilson interval fixes both and gives the same answer in the ordinary case, so it is what every interval in this series uses. With $z = 1.96$ for 95%:
+
+$$
+\frac{\hat p + \dfrac{z^2}{2n} \pm z\sqrt{\dfrac{\hat p(1-\hat p)}{n} + \dfrac{z^2}{4n^2}}}{1 + \dfrac{z^2}{n}}
+$$
+
+**What it means for the results.** Every score here is good to about ±2.5 points. The 7B with the hint and Beam without it are 0.2 points apart, well inside that, so they are level. The 14 points between Instruct and Beam with the hint are far outside it. Try other scores:
+
+<WilsonCalculator correct={764} n={1534} />
+
+## When the hint makes it worse
+
+The hint's gain is a net number. Compare each question with and without it, and the hint fixes a lot of questions but also breaks some, for every model:
+
+| Model | Hint fixed | Hint broke |
+|---|---|---|
+| Beam 1.0 | 290 | 82 |
+| DeepSeek V4.1-Flash | 292 | 58 |
+| Nemotron 3.5 Super | 348 | 41 |
+| Qwen2.5-Coder-7B-Instruct | 313 | 46 |
+| Qwen2.5-Coder-7B | 251 | 67 |
+
+"Broke" means right without the hint and wrong with it. For Instruct there are 46 of those, and I read all 46:
+
+| What happened | Questions |
+|---|---|
+| The hint's value does not match the data (case, spelling, date format), and the model copied it | 6 |
+| The hint uses notation SQLite cannot run, or a formula that leads to broken SQL | 5 |
+| The hint contradicts the answer key | 4 |
+| The hint says `max(...)` or `min(...)` and the model used the aggregate the wrong way | 3 |
+| The hint names extra columns and the model returned them too | 2 |
+| The question has no hint at all, yet the answer changed | 1 |
+| No clear link: the longer prompt sent the model to a different table or join | 25 |
+
+In 20 of the 46, the hint itself is to blame. Four of them, with both answers:
+
+<RecordExplorer title="Right without the hint, wrong with it" records={hintHurt} />
+
+## Same prompt, different answer
+
+One of the 46 is odd. Question 183 has no hint, so both runs got exactly the same prompt, and greedy decoding should give the same answer. It did not. One run used the column `account.date` and was right. The other used `account.issued`, which does not exist.
+
+To see how, here is how a model picks each token. At every step it gives a score $z_i$ to each token in its vocabulary, and softmax turns the scores into probabilities:
+
+$$
+p_i = \frac{e^{z_i}}{\sum_j e^{z_j}}
+$$
+
+Greedy decoding takes the most likely token every time, $\hat y = \arg\max_i p_i$. Same prompt, same scores, same answer, in theory. In practice the scores are computed in floating point on a GPU, and the exact arithmetic depends on which other prompts share the batch. The runs sort prompts by length before batching, so question 183 had different neighbours each time. When two tokens are nearly tied, a difference in the last decimal place is enough to swap them, and the two answers go separate ways from there. That is the most likely explanation.
+
+It is one question in 1,534, well inside the ±2.5 points. But it is a reminder that "greedy" does not quite mean "the same every time".
+
+## What comes next
+
+Part 3 keeps the model fixed and changes the prompt instead: column descriptions, example values, values from the question found in the database, and asking the model to reason before it answers. One at a time, to see what each is worth.
+
+<small>BIRD is by Jinyang Li and colleagues ([arXiv 2305.03111](https://arxiv.org/abs/2305.03111)) and is shared under CC BY-SA 4.0. The questions, SQL and rows quoted here are from it.</small>
