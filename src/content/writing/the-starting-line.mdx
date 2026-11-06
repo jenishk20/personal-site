@@ -141,22 +141,37 @@ Three things stand out.
 **There are 14 points to close.** With the hint, Instruct is 13.8 points behind Beam. That is the gap training has to close, and Arctic-Text2SQL-R1's 68.9% is 5 points past that again.
 
 <IntervalChart
-    title="BIRD dev, 1,534 questions"
+    title="Without the hint"
+    min={20}
+    max={70}
     rows={[
-        { label: 'Beam 1.0', note: 'with the hint', correct: 975, n: 1534 },
-        { label: 'DeepSeek V4.1-Flash', note: 'with the hint', correct: 954, n: 1534 },
-        { label: 'Nemotron 3.5 Super', note: 'with the hint', correct: 860, n: 1534 },
-        { label: 'Beam 1.0', note: 'without the hint', correct: 767, n: 1534 },
-        { label: 'Qwen 7B Instruct', note: 'with the hint', correct: 764, n: 1534 },
-        { label: 'Qwen 7B Base', note: 'with the hint', correct: 593, n: 1534 },
+        { label: 'Beam 1.0', correct: 767, n: 1534 },
+        { label: 'DeepSeek V4.1-Flash', correct: 720, n: 1534 },
+        { label: 'Nemotron 3.5 Super', correct: 553, n: 1534 },
+        { label: 'Qwen 7B Instruct', correct: 497, n: 1534 },
+        { label: 'Qwen 7B Base', correct: 409, n: 1534 },
     ]}
+/>
+
+<IntervalChart
+    title="With the hint"
+    min={20}
+    max={70}
+    rows={[
+        { label: 'Beam 1.0', correct: 975, n: 1534 },
+        { label: 'DeepSeek V4.1-Flash', correct: 954, n: 1534 },
+        { label: 'Nemotron 3.5 Super', correct: 860, n: 1534 },
+        { label: 'Qwen 7B Instruct', correct: 764, n: 1534 },
+        { label: 'Qwen 7B Base', correct: 593, n: 1534 },
+    ]}
+    caption="BIRD dev, 1,534 questions. Both charts use the same scale."
 />
 
 ## How sure are these numbers?
 
 Start with a coin. Flip it 10 times and get 6 heads, and nobody would say it lands heads 60% of the time. Flip it 1,534 times and the share of heads gets close to the coin's real tendency, but never exactly.
 
-A benchmark works the same way. Each question is one flip: the model gets it right or wrong. Instruct got 764 of 1,534 right, 49.8%. On 1,534 different questions of the same kind, it would have scored a point or two higher or lower. A **95% interval** is the range the model's real skill very likely falls in, here 47.3% to 52.3%. The 95% describes the method: run the experiment on 100 fresh sets of questions, and about 95 of the 100 ranges would contain the real value. The whiskers on the chart above are these intervals.
+A benchmark works the same way. Each question is one flip: the model gets it right or wrong. Instruct got 764 of 1,534 right, 49.8%. On 1,534 different questions of the same kind, it would have scored a point or two higher or lower. A **95% interval** is the range the model's real skill very likely falls in, here 47.3% to 52.3%. The 95% describes the method: run the experiment on 100 fresh sets of questions, and about 95 of the 100 ranges would contain the real value. The whiskers on the charts above are these intervals.
 
 **Where the ±2.5 comes from.** With $n$ flips and a chance $p$ of heads, the share of heads typically wobbles by $\sqrt{p(1-p)/n}$. For $p = 0.5$ and $n = 1{,}534$ that is 1.28 points. About 95% of results land within 1.96 wobbles of the truth, so with $\hat p$ the score:
 
