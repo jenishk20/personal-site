@@ -79,7 +79,7 @@ Before training anything, I need to know where the model starts. So this part ru
 - **Qwen2.5-Coder-7B-Instruct**, the same model after Qwen's own instruction tuning. It gets the prompt as a chat message.
 - **Three frontier models** for comparison: Beam 1.0 (501B parameters, 23B used per token), DeepSeek V4.1-Flash, and Nemotron 3.5 Super (120B, 12B used per token). They get the same chat message as Instruct. DeepSeek thinks out loud before answering, so it gets up to 65,536 tokens per answer instead of 16,384, enough that it rarely runs out before writing the SQL.
 
-All five use greedy decoding and get one try per question. This is the whole prompt for question 5 from Part 1, with the schema shortened:
+All five get one try per question, with the randomness turned off. This is the whole prompt for question 5 from Part 1, with the schema shortened:
 
 ````text
 You are given a SQLite database and a question about it. Write one SQL query that answers the question.
@@ -218,26 +218,12 @@ The hint's gain is a net number. Compare each question with and without it, and 
 | The hint contradicts the answer key | 4 |
 | The hint says `max(...)` or `min(...)` and the model used the aggregate the wrong way | 3 |
 | The hint names extra columns and the model returned them too | 2 |
-| The question has no hint at all, yet the answer changed | 1 |
+| The question has no hint, so the prompt was identical, yet the answer changed (run-to-run noise on the GPU) | 1 |
 | No clear link: the longer prompt sent the model to a different table or join | 25 |
 
 In 20 of the 46, the hint itself is to blame. Four of them, with both answers:
 
 <RecordExplorer title="Right without the hint, wrong with it" records={hintHurt} />
-
-## Same prompt, different answer
-
-One of the 46 is odd. Question 183 has no hint, so both runs got exactly the same prompt, and greedy decoding should give the same answer. It did not. One run used the column `account.date` and was right. The other used `account.issued`, which does not exist.
-
-To see how, here is how a model picks each token. At every step it gives a score $z_i$ to each token in its vocabulary, and softmax turns the scores into probabilities:
-
-$$
-p_i = \frac{e^{z_i}}{\sum_j e^{z_j}}
-$$
-
-Greedy decoding takes the most likely token every time, $\hat y = \arg\max_i p_i$. Same prompt, same scores, same answer, in theory. In practice the scores are computed in floating point on a GPU, and the exact arithmetic depends on which other prompts share the batch. The runs sort prompts by length before batching, so question 183 had different neighbours each time. When two tokens are nearly tied, a difference in the last decimal place is enough to swap them, and the two answers go separate ways from there. That is the most likely explanation.
-
-It is one question in 1,534, well inside the ±2.5 points. But it is a reminder that "greedy" does not quite mean "the same every time".
 
 ## What comes next
 

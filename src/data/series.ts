@@ -34,7 +34,7 @@ export const SERIES: Record<string, Series> = {
         repo: 'https://github.com/jenishk20/glassbox-sql',
         parts: [
             { part: 1, question: 'Understanding the data and the benchmark', maths: 'None yet: the data first' },
-            { part: 2, question: 'The starting line: a 7B against the frontier', maths: 'How answers are scored; 95% intervals; softmax and greedy decoding' },
+            { part: 2, question: 'The starting line: a 7B against the frontier', maths: 'How answers are scored; 95% intervals' },
             { part: 3, question: 'What is each prompt ingredient worth?', maths: 'Testing each change for significance; repetition penalty on logits' },
             { part: 4, question: 'How good are frontier models on the same prompt?', maths: 'Tokens to dollars; cost per correct answer' },
             { part: 5, question: 'Supervised fine-tuning', maths: 'Cross-entropy loss; LoRA’s low-rank update' },
